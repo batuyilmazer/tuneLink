@@ -29,7 +29,7 @@ targets:
           - CFBundleURLName: Spotify Auth
             CFBundleURLSchemes:
               - tunelinkapp
-        BASE_URL: "http://localhost:3000"
+        BASE_URL: "https://api.tunelink.bira.pizza"
         SPOTIFY_CLIENT_ID: "SPOTIFY_CLIENT_ID_HERE"
         UIBackgroundModes:
           - remote-notification
@@ -62,7 +62,7 @@ targets:
       properties:
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
-        BASE_URL: "http://localhost:3000"
+        BASE_URL: "https://api.tunelink.bira.pizza"
     entitlements:
       path: tuneLinkWidget/tuneLinkWidget.entitlements
       properties:

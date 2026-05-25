@@ -14,7 +14,7 @@ services:
       REDIS_URL: redis://redis:6379
       NODE_ENV: production
     ports:
-      - "127.0.0.1:3000:3000"   # sadece localhost'a bağla, Caddy üzerinden dışarı açılır
+      - "127.0.0.1:13742:3000"  # sadece localhost'a bağla, Caddy üzerinden dışarı açılır
     depends_on:
       - redis
 
