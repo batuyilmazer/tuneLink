@@ -38,6 +38,20 @@ async function pollAllUsers(): Promise<void> {
               }
             }
           }
+        } else if (previous) {
+          // User stopped listening — clear stale key immediately and notify partner
+          await redis.del(`user:${userId}:now_playing`)
+          const pairId = await getUserPairId(userId)
+          if (pairId) {
+            const members = await getPair(pairId)
+            if (members) {
+              const partnerId = members.userA === userId ? members.userB : members.userA
+              const partnerDeviceToken = await redis.get(`user:${partnerId}:device_token`)
+              if (partnerDeviceToken) {
+                await sendSilentPush(partnerDeviceToken, BUNDLE_ID)
+              }
+            }
+          }
         }
       } catch {
         // individual user failure should not stop the whole poll cycle

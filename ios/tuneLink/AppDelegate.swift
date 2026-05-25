@@ -19,7 +19,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     // 13.2 — Send device token to backend
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
+        // Always persist so SpotifyAuthManager can retry after login if userId isn't set yet
+        UserDefaults(suiteName: AppGroup.suiteName)?.set(token, forKey: AppGroup.Keys.deviceToken)
+        postDeviceToken(token)
+    }
+
+    func postDeviceToken(_ token: String) {
         guard let userId = UserDefaults(suiteName: AppGroup.suiteName)?.string(forKey: AppGroup.Keys.userId),
+              !userId.isEmpty,
               let url = URL(string: "\(baseURL)/device-token") else { return }
 
         var request = URLRequest(url: url)

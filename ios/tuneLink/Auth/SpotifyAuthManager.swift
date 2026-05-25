@@ -94,6 +94,20 @@ final class SpotifyAuthManager: NSObject, ObservableObject {
 
         let defaults = UserDefaults(suiteName: AppGroup.suiteName)
         defaults?.set(userId, forKey: AppGroup.Keys.userId)
+
+        // Device token may have arrived before login — retry sending it now
+        if let cachedToken = defaults?.string(forKey: AppGroup.Keys.deviceToken) {
+            try? await postDeviceToken(cachedToken, userId: userId)
+        }
+    }
+
+    private func postDeviceToken(_ token: String, userId: String) async throws {
+        guard let url = URL(string: "\(baseURL)/device-token") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(["userId": userId, "deviceToken": token])
+        _ = try await URLSession.shared.data(for: request)
     }
 }
 

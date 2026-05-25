@@ -13,7 +13,7 @@ auth.post('/callback', async (c) => {
 
   const { userId, displayName, access_token, refresh_token } = await exchangeCode(code, code_verifier)
   await setTokens(userId, { access_token, refresh_token })
-  if (displayName) await setUserDisplayName(userId, displayName)
+  await setUserDisplayName(userId, displayName ?? userId)
 
   return c.json({ userId })
 })
