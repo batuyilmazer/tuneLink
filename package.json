@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@parse/node-apn": "^7.1.0"
+  }
+}

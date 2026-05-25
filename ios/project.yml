@@ -1,0 +1,72 @@
+name: tuneLink
+
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "16"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+
+targets:
+
+  tuneLink:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: tuneLink
+      - path: Shared
+    info:
+      path: tuneLink/Info.plist
+      properties:
+        CFBundleDisplayName: tuneLink
+        CFBundleURLTypes:
+          - CFBundleURLName: Spotify Auth
+            CFBundleURLSchemes:
+              - tunelinkapp
+        BASE_URL: "http://localhost:3000"
+        UIBackgroundModes:
+          - remote-notification
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    entitlements:
+      path: tuneLink/tuneLink.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.example.tuneLink
+        aps-environment: development
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.tuneLink
+    dependencies:
+      - target: tuneLinkWidget
+        embed: true
+
+  tuneLinkWidget:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: tuneLinkWidget
+      - path: Shared
+    info:
+      path: tuneLinkWidget/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        BASE_URL: "http://localhost:3000"
+    entitlements:
+      path: tuneLinkWidget/tuneLinkWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.example.tuneLink
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.tuneLink.widget

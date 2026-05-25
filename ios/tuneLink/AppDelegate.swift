@@ -1,0 +1,41 @@
+import UIKit
+import WidgetKit
+
+final class AppDelegate: NSObject, UIApplicationDelegate {
+    private let baseURL: String = {
+        Bundle.main.object(forInfoDictionaryKey: "BASE_URL") as? String ?? "http://localhost:3000"
+    }()
+
+    // 13.2 — Register for remote notifications
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+        application.registerForRemoteNotifications()
+        return true
+    }
+
+    // 13.2 — Send device token to backend
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let token = deviceToken.map { String(format: "%02x", $0) }.joined()
+        guard let userId = UserDefaults(suiteName: AppGroup.suiteName)?.string(forKey: AppGroup.Keys.userId),
+              let url = URL(string: "\(baseURL)/device-token") else { return }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONEncoder().encode(["userId": userId, "deviceToken": token])
+        URLSession.shared.dataTask(with: request).resume()
+    }
+
+    // 13.5 — Handle silent push → reload widget timelines
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        WidgetCenter.shared.reloadAllTimelines()
+        completionHandler(.newData)
+    }
+}

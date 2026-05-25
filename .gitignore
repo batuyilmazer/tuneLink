@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.js.map
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# Xcode / iOS
+ios/*.xcworkspace/xcuserdata/
+ios/Pods/
+ios/DerivedData/
+*.xcuserstate

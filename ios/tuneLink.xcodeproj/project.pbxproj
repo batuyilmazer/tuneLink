@@ -1,0 +1,463 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02B7B521A380641D5D8987A0 /* tuneLinkWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		57499D79E1AA3B0D75EF8565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA2CD132697D655B65B9D67 /* LoginView.swift */; };
+		B4CDED4307C871EDFF01649A /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296DECD1F6A76062795E1B65 /* AppGroup.swift */; };
+		BCE663F8AC0C97C582E7F83D /* tuneLinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF9A8F0D9EF1277220D7BF /* tuneLinkWidget.swift */; };
+		CC337B0FAF4A0C7AE7C07BD0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704A21F7644B7D7E336D4CD5 /* AppDelegate.swift */; };
+		D349A4BD992A3D39A6765F91 /* tuneLinkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA84EE64008666AC3A346992 /* tuneLinkApp.swift */; };
+		D4316DEA4A313EE12BE00AEA /* SpotifyAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B2124DC2AC53552CDE4F48 /* SpotifyAuthManager.swift */; };
+		E3A1F9A6004820B966BC4FC3 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3171A42FBF5851FE6158207A /* WidgetView.swift */; };
+		EE6185BFB4CE4E331E2FF56A /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3729720B00A3996DE3543CB7 /* PairingView.swift */; };
+		F8C8638972F98BAEDF7A01DC /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF83EBF79403086908D27FCF /* Provider.swift */; };
+		FA1DD4E320E5BA91D95B8E8E /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296DECD1F6A76062795E1B65 /* AppGroup.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C6E48CB95A0568D4C279D55B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B3752405446AB69A22AA0A89 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 79C8BFFFB8B2CBFAB8D48D4A;
+			remoteInfo = tuneLinkWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		833B261C6259BA72B7368E24 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				02B7B521A380641D5D8987A0 /* tuneLinkWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0B688D20FB5349DEF00AA884 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		278CA7F89F146B4B9FF5DA9F /* tuneLinkWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tuneLinkWidget.entitlements; sourceTree = "<group>"; };
+		296DECD1F6A76062795E1B65 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
+		3171A42FBF5851FE6158207A /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
+		3729720B00A3996DE3543CB7 /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
+		4CA2CD132697D655B65B9D67 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = tuneLinkWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E73C00A95B4EBCF72DBEAE9 /* tuneLink.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tuneLink.entitlements; sourceTree = "<group>"; };
+		704A21F7644B7D7E336D4CD5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9737349DA2733259904B6F09 /* tuneLink.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = tuneLink.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0C54FF96629D9092288ADE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C9B2124DC2AC53552CDE4F48 /* SpotifyAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAuthManager.swift; sourceTree = "<group>"; };
+		CEEF9A8F0D9EF1277220D7BF /* tuneLinkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tuneLinkWidget.swift; sourceTree = "<group>"; };
+		EF83EBF79403086908D27FCF /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
+		FA84EE64008666AC3A346992 /* tuneLinkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tuneLinkApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		07CAAF026241740D3BEC3BFB /* tuneLinkWidget */ = {
+			isa = PBXGroup;
+			children = (
+				A0C54FF96629D9092288ADE5 /* Info.plist */,
+				EF83EBF79403086908D27FCF /* Provider.swift */,
+				278CA7F89F146B4B9FF5DA9F /* tuneLinkWidget.entitlements */,
+				CEEF9A8F0D9EF1277220D7BF /* tuneLinkWidget.swift */,
+				3171A42FBF5851FE6158207A /* WidgetView.swift */,
+			);
+			path = tuneLinkWidget;
+			sourceTree = "<group>";
+		};
+		0A4F08FD122AB2DE44FB0ACA /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				4CA2CD132697D655B65B9D67 /* LoginView.swift */,
+				C9B2124DC2AC53552CDE4F48 /* SpotifyAuthManager.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		3A1E6293080BB2E119BA72FD /* Pairing */ = {
+			isa = PBXGroup;
+			children = (
+				3729720B00A3996DE3543CB7 /* PairingView.swift */,
+			);
+			path = Pairing;
+			sourceTree = "<group>";
+		};
+		7D850FA262A097712DB64FD6 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				296DECD1F6A76062795E1B65 /* AppGroup.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		93D69317954B09B9EB7442DD = {
+			isa = PBXGroup;
+			children = (
+				7D850FA262A097712DB64FD6 /* Shared */,
+				AF2AFE7E5749FC14F2C63DB0 /* tuneLink */,
+				07CAAF026241740D3BEC3BFB /* tuneLinkWidget */,
+				AD14C35D969A094A5FA7FB31 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AD14C35D969A094A5FA7FB31 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9737349DA2733259904B6F09 /* tuneLink.app */,
+				53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AF2AFE7E5749FC14F2C63DB0 /* tuneLink */ = {
+			isa = PBXGroup;
+			children = (
+				704A21F7644B7D7E336D4CD5 /* AppDelegate.swift */,
+				0B688D20FB5349DEF00AA884 /* Info.plist */,
+				6E73C00A95B4EBCF72DBEAE9 /* tuneLink.entitlements */,
+				FA84EE64008666AC3A346992 /* tuneLinkApp.swift */,
+				0A4F08FD122AB2DE44FB0ACA /* Auth */,
+				3A1E6293080BB2E119BA72FD /* Pairing */,
+			);
+			path = tuneLink;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		01B964857E846E621A438860 /* tuneLink */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B4DA76BAC6D10F01A860AE5 /* Build configuration list for PBXNativeTarget "tuneLink" */;
+			buildPhases = (
+				5D46C37B6F6942D9DE34A122 /* Sources */,
+				833B261C6259BA72B7368E24 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1ECCAA8F2FD32D90EA8EA9CA /* PBXTargetDependency */,
+			);
+			name = tuneLink;
+			packageProductDependencies = (
+			);
+			productName = tuneLink;
+			productReference = 9737349DA2733259904B6F09 /* tuneLink.app */;
+			productType = "com.apple.product-type.application";
+		};
+		79C8BFFFB8B2CBFAB8D48D4A /* tuneLinkWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63C61926F002713E1D11CE0B /* Build configuration list for PBXNativeTarget "tuneLinkWidget" */;
+			buildPhases = (
+				C288007A709F3F71B0F14D96 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tuneLinkWidget;
+			packageProductDependencies = (
+			);
+			productName = tuneLinkWidget;
+			productReference = 53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B3752405446AB69A22AA0A89 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = BCE4C770F04689B5E9DEF32F /* Build configuration list for PBXProject "tuneLink" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 93D69317954B09B9EB7442DD;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = AD14C35D969A094A5FA7FB31 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				01B964857E846E621A438860 /* tuneLink */,
+				79C8BFFFB8B2CBFAB8D48D4A /* tuneLinkWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5D46C37B6F6942D9DE34A122 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC337B0FAF4A0C7AE7C07BD0 /* AppDelegate.swift in Sources */,
+				FA1DD4E320E5BA91D95B8E8E /* AppGroup.swift in Sources */,
+				57499D79E1AA3B0D75EF8565 /* LoginView.swift in Sources */,
+				EE6185BFB4CE4E331E2FF56A /* PairingView.swift in Sources */,
+				D4316DEA4A313EE12BE00AEA /* SpotifyAuthManager.swift in Sources */,
+				D349A4BD992A3D39A6765F91 /* tuneLinkApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C288007A709F3F71B0F14D96 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4CDED4307C871EDFF01649A /* AppGroup.swift in Sources */,
+				F8C8638972F98BAEDF7A01DC /* Provider.swift in Sources */,
+				E3A1F9A6004820B966BC4FC3 /* WidgetView.swift in Sources */,
+				BCE663F8AC0C97C582E7F83D /* tuneLinkWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1ECCAA8F2FD32D90EA8EA9CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 79C8BFFFB8B2CBFAB8D48D4A /* tuneLinkWidget */;
+			targetProxy = C6E48CB95A0568D4C279D55B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1E625253B0E52D915EFF2F11 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		205FA0F936CF446D1FE553A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = tuneLinkWidget/tuneLinkWidget.entitlements;
+				INFOPLIST_FILE = tuneLinkWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.tuneLink.widget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		83EF3A4D830223A1119F0ABA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = tuneLink/tuneLink.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = tuneLink/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.tuneLink;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9A1CFA3F5B74F09067391399 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = tuneLinkWidget/tuneLinkWidget.entitlements;
+				INFOPLIST_FILE = tuneLinkWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.tuneLink.widget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B54F7AA58F669DA67BB3C2A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		DE756EA9ACFB33539EB9E26D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = tuneLink/tuneLink.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = tuneLink/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.tuneLink;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B4DA76BAC6D10F01A860AE5 /* Build configuration list for PBXNativeTarget "tuneLink" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83EF3A4D830223A1119F0ABA /* Debug */,
+				DE756EA9ACFB33539EB9E26D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		63C61926F002713E1D11CE0B /* Build configuration list for PBXNativeTarget "tuneLinkWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9A1CFA3F5B74F09067391399 /* Debug */,
+				205FA0F936CF446D1FE553A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BCE4C770F04689B5E9DEF32F /* Build configuration list for PBXProject "tuneLink" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B54F7AA58F669DA67BB3C2A5 /* Debug */,
+				1E625253B0E52D915EFF2F11 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B3752405446AB69A22AA0A89 /* Project object */;
+}
