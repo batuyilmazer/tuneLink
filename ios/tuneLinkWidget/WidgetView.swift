@@ -1,11 +1,29 @@
 import SwiftUI
 import WidgetKit
 
+// iOS 16/17 compat: containerBackground(for:) is iOS 17+
+extension View {
+    @ViewBuilder
+    func widgetBackground<B: View>(@ViewBuilder background: () -> B) -> some View {
+        if #available(iOS 17.0, *) {
+            containerBackground(for: .widget, content: background)
+        } else {
+            self.background(background())
+        }
+    }
+}
+
 // 12.2 — Home screen widget view
 struct HomeWidgetView: View {
     let entry: NowPlayingEntry
 
     var body: some View {
+        content
+            .widgetBackground { Color(.systemBackground) }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         if entry.isPlaying, let track = entry.track, let artist = entry.artist {
             HStack(spacing: 10) {
                 AlbumArtView(url: entry.albumArtURL, size: 54)
@@ -35,6 +53,12 @@ struct AccessoryRectangularView: View {
     let entry: NowPlayingEntry
 
     var body: some View {
+        content
+            .widgetBackground { }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         if entry.isPlaying, let track = entry.track, let artist = entry.artist {
             VStack(alignment: .leading, spacing: 1) {
                 Label(track, systemImage: "music.note")
@@ -55,6 +79,12 @@ struct AccessoryCircularView: View {
     let entry: NowPlayingEntry
 
     var body: some View {
+        content
+            .widgetBackground { }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         if entry.isPlaying {
             ZStack {
                 AlbumArtView(url: entry.albumArtURL, size: 40)

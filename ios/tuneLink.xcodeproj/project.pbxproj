@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		02B7B521A380641D5D8987A0 /* tuneLinkWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		4CC278F57ED97344F413976D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1EA76A858657FAAF41A891C /* Assets.xcassets */; };
 		57499D79E1AA3B0D75EF8565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA2CD132697D655B65B9D67 /* LoginView.swift */; };
 		B4CDED4307C871EDFF01649A /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296DECD1F6A76062795E1B65 /* AppGroup.swift */; };
 		BCE663F8AC0C97C582E7F83D /* tuneLinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF9A8F0D9EF1277220D7BF /* tuneLinkWidget.swift */; };
@@ -51,13 +52,14 @@
 		3171A42FBF5851FE6158207A /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
 		3729720B00A3996DE3543CB7 /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
 		4CA2CD132697D655B65B9D67 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = tuneLinkWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = tuneLinkWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E73C00A95B4EBCF72DBEAE9 /* tuneLink.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tuneLink.entitlements; sourceTree = "<group>"; };
 		704A21F7644B7D7E336D4CD5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		9737349DA2733259904B6F09 /* tuneLink.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = tuneLink.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9737349DA2733259904B6F09 /* tuneLink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tuneLink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0C54FF96629D9092288ADE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C9B2124DC2AC53552CDE4F48 /* SpotifyAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAuthManager.swift; sourceTree = "<group>"; };
 		CEEF9A8F0D9EF1277220D7BF /* tuneLinkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tuneLinkWidget.swift; sourceTree = "<group>"; };
+		E1EA76A858657FAAF41A891C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF83EBF79403086908D27FCF /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		FA84EE64008666AC3A346992 /* tuneLinkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tuneLinkApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				704A21F7644B7D7E336D4CD5 /* AppDelegate.swift */,
+				E1EA76A858657FAAF41A891C /* Assets.xcassets */,
 				0B688D20FB5349DEF00AA884 /* Info.plist */,
 				6E73C00A95B4EBCF72DBEAE9 /* tuneLink.entitlements */,
 				FA84EE64008666AC3A346992 /* tuneLinkApp.swift */,
@@ -140,6 +143,7 @@
 			buildConfigurationList = 2B4DA76BAC6D10F01A860AE5 /* Build configuration list for PBXNativeTarget "tuneLink" */;
 			buildPhases = (
 				5D46C37B6F6942D9DE34A122 /* Sources */,
+				E553EB39B1CF059AC1463EDC /* Resources */,
 				833B261C6259BA72B7368E24 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -179,8 +183,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = BCE4C770F04689B5E9DEF32F /* Build configuration list for PBXProject "tuneLink" */;
 			developmentRegion = en;
@@ -201,6 +203,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E553EB39B1CF059AC1463EDC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CC278F57ED97344F413976D /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5D46C37B6F6942D9DE34A122 /* Sources */ = {
@@ -298,6 +311,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = tuneLinkWidget/tuneLinkWidget.entitlements;
+				DEVELOPMENT_TEAM = 7Y566H6WC6;
 				INFOPLIST_FILE = tuneLinkWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -317,6 +331,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = tuneLink/tuneLink.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 7Y566H6WC6;
 				INFOPLIST_FILE = tuneLink/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -325,7 +340,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = pizza.bira.tuneLink;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -333,6 +348,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = tuneLinkWidget/tuneLinkWidget.entitlements;
+				DEVELOPMENT_TEAM = 7Y566H6WC6;
 				INFOPLIST_FILE = tuneLinkWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -415,6 +431,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = tuneLink/tuneLink.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 7Y566H6WC6;
 				INFOPLIST_FILE = tuneLink/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -423,7 +440,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = pizza.bira.tuneLink;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

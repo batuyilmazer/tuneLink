@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { randomBytes, randomUUID } from 'crypto'
-import { redis, setPair, setUserPairId } from '../services/redis.js'
+import { redis, setPair, setUserPairId, getUserPairId } from '../services/redis.js'
 
 const pair = new Hono()
 
@@ -32,6 +32,11 @@ pair.post('/', async (c) => {
   if (invitingUserId === userId) {
     return c.json({ error: 'Cannot pair with yourself' }, 400)
   }
+
+  const oldPairIdA = await getUserPairId(invitingUserId)
+  const oldPairIdB = await getUserPairId(userId)
+  if (oldPairIdA) await redis.del(`pair:${oldPairIdA}`)
+  if (oldPairIdB && oldPairIdB !== oldPairIdA) await redis.del(`pair:${oldPairIdB}`)
 
   const pairId = randomUUID()
   await setPair(pairId, { userA: invitingUserId, userB: userId })

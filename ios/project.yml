@@ -25,18 +25,20 @@ targets:
       path: tuneLink/Info.plist
       properties:
         CFBundleDisplayName: tuneLink
+        CFBundleIconName: AppIcon
         CFBundleURLTypes:
           - CFBundleURLName: Spotify Auth
             CFBundleURLSchemes:
               - tunelinkapp
         BASE_URL: "https://api.tunelink.bira.pizza"
         SPOTIFY_CLIENT_ID: "SPOTIFY_CLIENT_ID_HERE"
+        ITSAppUsesNonExemptEncryption: false
         UIBackgroundModes:
           - remote-notification
+        UILaunchScreen: {}
+        UIRequiresFullScreen: true
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-          - UIInterfaceOrientationLandscapeLeft
-          - UIInterfaceOrientationLandscapeRight
     entitlements:
       path: tuneLink/tuneLink.entitlements
       properties:
@@ -46,6 +48,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: pizza.bira.tuneLink
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
     dependencies:
       - target: tuneLinkWidget
         embed: true
@@ -60,6 +64,7 @@ targets:
     info:
       path: tuneLinkWidget/Info.plist
       properties:
+        CFBundleDisplayName: tuneLinkWidget
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         BASE_URL: "https://api.tunelink.bira.pizza"

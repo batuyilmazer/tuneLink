@@ -2,6 +2,7 @@ import WidgetKit
 import SwiftUI
 
 // 12.4 — Register both widget families
+@main
 struct tuneLinkWidget: Widget {
     let kind = "tuneLinkWidget"
 
