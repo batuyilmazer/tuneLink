@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { getUserPairId, getPair, getNowPlaying } from '../services/redis.js'
+import { getUserPairId, getPair, getNowPlaying, getUserDisplayName } from '../services/redis.js'
 
 const partner = new Hono()
 
@@ -15,11 +15,12 @@ partner.get('/partner-track', async (c) => {
   if (!members) return c.json({ error: 'Pair not found' }, 404)
 
   const partnerId = members.userA === userId ? members.userB : members.userA
+  const partnerName = await getUserDisplayName(partnerId)
 
   const nowPlaying = await getNowPlaying(partnerId)
-  if (!nowPlaying) return c.json({ playing: false })
+  if (!nowPlaying) return c.json({ playing: false, partnerName })
 
-  return c.json({ playing: true, ...nowPlaying })
+  return c.json({ playing: true, partnerName, ...nowPlaying })
 })
 
 export default partner

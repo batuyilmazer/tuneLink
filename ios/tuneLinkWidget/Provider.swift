@@ -7,6 +7,7 @@ struct NowPlayingEntry: TimelineEntry {
     let artist: String?
     let albumArtURL: URL?
     let isPlaying: Bool
+    let partnerName: String?
 }
 
 struct NowPlayingResponse: Decodable {
@@ -14,6 +15,7 @@ struct NowPlayingResponse: Decodable {
     let track: String?
     let artist: String?
     let albumArt: String?
+    let partnerName: String?
 }
 
 struct Provider: TimelineProvider {
@@ -26,7 +28,7 @@ struct Provider: TimelineProvider {
     }
 
     func placeholder(in context: Context) -> NowPlayingEntry {
-        NowPlayingEntry(date: .now, track: "Song Title", artist: "Artist", albumArtURL: nil, isPlaying: true)
+        NowPlayingEntry(date: .now, track: "Song Title", artist: "Artist", albumArtURL: nil, isPlaying: true, partnerName: "Partner")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (NowPlayingEntry) -> Void) {
@@ -49,7 +51,7 @@ struct Provider: TimelineProvider {
     private func fetchEntry() async -> NowPlayingEntry {
         guard !userId.isEmpty,
               let url = URL(string: "\(baseURL)/partner-track?userId=\(userId)") else {
-            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false)
+            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false, partnerName: nil)
         }
 
         do {
@@ -61,10 +63,11 @@ struct Provider: TimelineProvider {
                 track: response.track,
                 artist: response.artist,
                 albumArtURL: artURL,
-                isPlaying: response.playing
+                isPlaying: response.playing,
+                partnerName: response.partnerName
             )
         } catch {
-            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false)
+            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false, partnerName: nil)
         }
     }
 }

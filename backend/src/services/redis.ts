@@ -52,6 +52,16 @@ export async function getPair(pairId: string): Promise<PairMembers | null> {
   return raw ? (JSON.parse(raw) as PairMembers) : null
 }
 
+// --- Display Names ---
+
+export async function setUserDisplayName(userId: string, name: string): Promise<void> {
+  await redis.set(`user:${userId}:displayName`, name)
+}
+
+export async function getUserDisplayName(userId: string): Promise<string | null> {
+  return redis.get(`user:${userId}:displayName`)
+}
+
 // --- User → PairId reverse lookup ---
 
 export async function setUserPairId(userId: string, pairId: string): Promise<void> {

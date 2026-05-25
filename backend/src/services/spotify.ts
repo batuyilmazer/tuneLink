@@ -13,6 +13,7 @@ function basicAuthHeader(): string {
 
 export interface ExchangeResult {
   userId: string
+  displayName?: string
   access_token: string
   refresh_token: string
 }
@@ -49,9 +50,14 @@ export async function exchangeCode(code: string, codeVerifier: string): Promise<
     throw new Error(`GET /me failed: ${meRes.status}`)
   }
 
-  const me = (await meRes.json()) as { id: string }
+  const me = (await meRes.json()) as { id: string; display_name?: string }
 
-  return { userId: me.id, access_token: tokens.access_token, refresh_token: tokens.refresh_token }
+  return {
+    userId: me.id,
+    displayName: me.display_name,
+    access_token: tokens.access_token,
+    refresh_token: tokens.refresh_token,
+  }
 }
 
 export async function refreshAccessToken(userId: string): Promise<string> {

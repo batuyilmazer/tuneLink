@@ -16,6 +16,7 @@ extension View {
 // 12.2 — Home screen widget view
 struct HomeWidgetView: View {
     let entry: NowPlayingEntry
+    @Environment(\.widgetFamily) var family
 
     var body: some View {
         content
@@ -24,10 +25,68 @@ struct HomeWidgetView: View {
 
     @ViewBuilder
     private var content: some View {
+        if family == .systemSmall {
+            smallContent
+        } else {
+            mediumContent
+        }
+    }
+
+    // Small widget: vertical stack — album art, track, artist, partner name at bottom
+    @ViewBuilder
+    private var smallContent: some View {
+        if entry.isPlaying, let track = entry.track, let artist = entry.artist {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    AlbumArtView(url: entry.albumArtURL, size: 56)
+                    Spacer(minLength: 0)
+                }
+                Spacer(minLength: 6)
+                Text(track)
+                    .font(.system(size: 12, weight: .semibold))
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                    .truncationMode(.tail)
+                Text(artist)
+                    .font(.system(size: 10))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .padding(.top, 2)
+                Spacer(minLength: 4)
+                Text("♫ \(entry.partnerName ?? "Partner")")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+            }
+            .padding(12)
+        } else {
+            VStack(alignment: .leading, spacing: 6) {
+                Image(systemName: "music.note")
+                    .font(.system(size: 22))
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 0)
+                Text("\(entry.partnerName ?? "Partner") dinlemiyor")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        }
+    }
+
+    // Medium widget: horizontal layout with partner name label
+    @ViewBuilder
+    private var mediumContent: some View {
         if entry.isPlaying, let track = entry.track, let artist = entry.artist {
             HStack(spacing: 10) {
                 AlbumArtView(url: entry.albumArtURL, size: 54)
                 VStack(alignment: .leading, spacing: 2) {
+                    Text(entry.partnerName ?? "Partner")
+                        .font(.system(size: 9))
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
                     Text(track)
                         .font(.system(size: 13, weight: .semibold))
                         .lineLimit(2)
@@ -40,7 +99,7 @@ struct HomeWidgetView: View {
             }
             .padding(12)
         } else {
-            Text("Partner isn't listening")
+            Text("\(entry.partnerName ?? "Partner") dinlemiyor")
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
                 .padding(12)
