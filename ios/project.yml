@@ -1,7 +1,7 @@
 name: tuneLink
 
 options:
-  bundleIdPrefix: com.example
+  bundleIdPrefix: pizza.bira
   deploymentTarget:
     iOS: "16.0"
   xcodeVersion: "16"
@@ -30,6 +30,7 @@ targets:
             CFBundleURLSchemes:
               - tunelinkapp
         BASE_URL: "http://localhost:3000"
+        SPOTIFY_CLIENT_ID: "SPOTIFY_CLIENT_ID_HERE"
         UIBackgroundModes:
           - remote-notification
         UISupportedInterfaceOrientations:
@@ -40,11 +41,11 @@ targets:
       path: tuneLink/tuneLink.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.example.tuneLink
+          - group.pizza.bira.tunelink
         aps-environment: development
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.tuneLink
+        PRODUCT_BUNDLE_IDENTIFIER: pizza.bira.tuneLink
     dependencies:
       - target: tuneLinkWidget
         embed: true
@@ -66,7 +67,7 @@ targets:
       path: tuneLinkWidget/tuneLinkWidget.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.example.tuneLink
+          - group.pizza.bira.tunelink
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.tuneLink.widget
+        PRODUCT_BUNDLE_IDENTIFIER: pizza.bira.tuneLink.widget

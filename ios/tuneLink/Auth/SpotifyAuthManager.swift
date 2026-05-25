@@ -99,6 +99,6 @@ final class SpotifyAuthManager: NSObject, ObservableObject {
 
 extension SpotifyAuthManager: ASWebAuthenticationPresentationContextProviding {
     nonisolated func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        ASPresentationAnchor()
+        MainActor.assumeIsolated { ASPresentationAnchor() }
     }
 }

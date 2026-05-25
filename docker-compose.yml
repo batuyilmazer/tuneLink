@@ -1,0 +1,22 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    # sadece backend erişir, dışarıya port açılmıyor
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+    ports:
+      - "127.0.0.1:3000:3000"   # sadece localhost'a bağla, Caddy üzerinden dışarı açılır
+    depends_on:
+      - redis
+
+volumes:
+  redis_data:

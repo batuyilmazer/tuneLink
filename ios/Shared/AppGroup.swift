@@ -1,7 +1,7 @@
 import Foundation
 
 enum AppGroup {
-    static let suiteName = "group.com.example.tuneLink"
+    static let suiteName = "group.pizza.bira.tunelink"
 
     enum Keys {
         static let userId = "userId"

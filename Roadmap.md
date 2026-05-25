@@ -79,10 +79,10 @@ Check off each step as it's completed. Every step has exactly one job.
 
 ## Phase 9 — iOS App Scaffold
 
-- [ ] **9.1** Create Xcode project `ios/tuneLink` (iOS 16+, SwiftUI lifecycle)
-- [ ] **9.2** Add WidgetKit extension target `tuneLinkWidget` to the Xcode project
-- [ ] **9.3** Configure App Group entitlement shared between main app and widget extension
-- [ ] **9.4** Add `BASE_URL` to `Info.plist` pointing at backend
+- [x] **9.1** Create Xcode project `ios/tuneLink` (iOS 16+, SwiftUI lifecycle)
+- [x] **9.2** Add WidgetKit extension target `tuneLinkWidget` to the Xcode project
+- [x] **9.3** Configure App Group entitlement shared between main app and widget extension
+- [x] **9.4** Add `BASE_URL` to `Info.plist` pointing at backend
 
 ---
 
@@ -112,8 +112,8 @@ Check off each step as it's completed. Every step has exactly one job.
 
 ## Phase 13 — APNs Push (Widget Fast-Refresh)
 
-- [ ] **13.1** Enable Push Notifications capability in the main app target
-- [ ] **13.2** Register for remote notifications in `AppDelegate` / `@main`, send device token to backend `POST /device-token`
+- [x] **13.1** Enable Push Notifications capability in the main app target
+- [x] **13.2** Register for remote notifications in `AppDelegate` / `@main`, send device token to backend `POST /device-token`
 - [x] **13.3** Add `POST /device-token` route to backend — stores `user:{userId}:device_token` in Redis
 - [x] **13.4** In `poller.ts`, after writing `now_playing`, compare with previous value — if track changed, send APNs silent push to partner's device token
 - [x] **13.5** Handle silent push in app background: call `WidgetCenter.shared.reloadAllTimelines()`

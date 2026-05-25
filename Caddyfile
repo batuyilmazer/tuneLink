@@ -1,0 +1,3 @@
+api.tunelink.bira.pizza {
+    reverse_proxy localhost:3000
+}
