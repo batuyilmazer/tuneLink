@@ -59,7 +59,33 @@ struct HomeWidgetView: View {
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
             }
-            .padding(12)
+            .padding(8)
+        } else if let track = entry.lastTrack, let artist = entry.lastArtist {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    AlbumArtView(url: entry.lastAlbumArtURL, size: 56, dimmed: true)
+                    Spacer(minLength: 0)
+                }
+                Spacer(minLength: 6)
+                Text(track)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                    .truncationMode(.tail)
+                Text(artist)
+                    .font(.system(size: 10))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .padding(.top, 2)
+                Spacer(minLength: 4)
+                Text(entry.lastPlayedAt.map { relativeTime($0) } ?? "")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+            }
+            .padding(8)
         } else {
             VStack(alignment: .leading, spacing: 6) {
                 Image(systemName: "music.note")
@@ -71,7 +97,7 @@ struct HomeWidgetView: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
             }
-            .padding(12)
+            .padding(8)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
     }
@@ -97,12 +123,32 @@ struct HomeWidgetView: View {
                 }
                 Spacer(minLength: 0)
             }
-            .padding(12)
+            .padding(8)
+        } else if let track = entry.lastTrack, let artist = entry.lastArtist {
+            HStack(spacing: 10) {
+                AlbumArtView(url: entry.lastAlbumArtURL, size: 54, dimmed: true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(entry.lastPlayedAt.map { relativeTime($0) } ?? "")
+                        .font(.system(size: 9))
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                    Text(track)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                    Text(artist)
+                        .font(.system(size: 11))
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(8)
         } else {
             Text("\(entry.partnerName ?? "Partner") dinlemiyor")
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
-                .padding(12)
+                .padding(8)
         }
     }
 }
@@ -126,6 +172,23 @@ struct AccessoryRectangularView: View {
                 Text(artist)
                     .font(.system(size: 10))
                     .lineLimit(1)
+            }
+        } else if let track = entry.lastTrack, let artist = entry.lastArtist {
+            VStack(alignment: .leading, spacing: 1) {
+                Label(track, systemImage: "music.note")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                HStack(spacing: 4) {
+                    Text(artist)
+                        .font(.system(size: 10))
+                        .lineLimit(1)
+                    if let date = entry.lastPlayedAt {
+                        Text("· \(relativeTime(date))")
+                            .font(.system(size: 10))
+                    }
+                }
+                .foregroundStyle(.tertiary)
             }
         } else {
             Label("Not listening", systemImage: "music.note.list")
@@ -152,6 +215,8 @@ struct AccessoryCircularView: View {
                     .foregroundStyle(.white)
                     .shadow(radius: 2)
             }
+        } else if entry.lastAlbumArtURL != nil {
+            AlbumArtView(url: entry.lastAlbumArtURL, size: 40, dimmed: true)
         } else {
             Image(systemName: "music.note.list")
                 .font(.system(size: 16))
@@ -162,6 +227,7 @@ struct AccessoryCircularView: View {
 private struct AlbumArtView: View {
     let url: URL?
     let size: CGFloat
+    var dimmed: Bool = false
 
     var body: some View {
         Group {
@@ -180,6 +246,7 @@ private struct AlbumArtView: View {
         }
         .frame(width: size, height: size)
         .clipShape(RoundedRectangle(cornerRadius: 6))
+        .opacity(dimmed ? 0.45 : 1)
     }
 
     private var placeholder: some View {
@@ -187,4 +254,15 @@ private struct AlbumArtView: View {
             .fill(Color.secondary.opacity(0.3))
             .overlay(Image(systemName: "music.note").foregroundStyle(.secondary))
     }
+}
+
+private func relativeTime(_ date: Date) -> String {
+    let seconds = Int(Date.now.timeIntervalSince(date))
+    if seconds < 60 { return "\(seconds)s önce" }
+    let minutes = seconds / 60
+    if minutes < 60 { return "\(minutes)dk önce" }
+    let hours = minutes / 60
+    if hours < 24 { return "\(hours)s önce" }
+    let days = hours / 24
+    return "\(days)g önce"
 }

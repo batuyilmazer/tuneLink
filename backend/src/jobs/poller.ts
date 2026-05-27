@@ -1,9 +1,9 @@
 import cron from 'node-cron'
-import { redis, setNowPlaying, getNowPlaying, getUserPairId, getPair } from '../services/redis.js'
+import { redis, setNowPlaying, getNowPlaying, setLastPlayed, getUserPairId, getPair } from '../services/redis.js'
 import { fetchNowPlaying } from '../services/spotify.js'
 import { sendSilentPush } from '../services/apns.js'
 
-const BUNDLE_ID = process.env.APNS_BUNDLE_ID ?? 'com.example.tuneLink'
+const BUNDLE_ID = process.env.APNS_BUNDLE_ID ?? 'pizza.bira.tuneLink'
 
 async function pollAllUsers(): Promise<void> {
   let cursor = '0'
@@ -22,6 +22,7 @@ async function pollAllUsers(): Promise<void> {
 
         if (nowPlaying) {
           await setNowPlaying(userId, nowPlaying)
+          await setLastPlayed(userId, nowPlaying)
 
           const trackChanged = previous?.track !== nowPlaying.track
 

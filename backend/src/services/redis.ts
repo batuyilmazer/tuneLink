@@ -36,6 +36,15 @@ export async function getNowPlaying(userId: string): Promise<NowPlayingPayload |
   return raw ? (JSON.parse(raw) as NowPlayingPayload) : null
 }
 
+export async function setLastPlayed(userId: string, payload: NowPlayingPayload): Promise<void> {
+  await redis.set(`user:${userId}:last_played`, JSON.stringify(payload))
+}
+
+export async function getLastPlayed(userId: string): Promise<NowPlayingPayload | null> {
+  const raw = await redis.get(`user:${userId}:last_played`)
+  return raw ? (JSON.parse(raw) as NowPlayingPayload) : null
+}
+
 // --- Pairs ---
 
 interface PairMembers {

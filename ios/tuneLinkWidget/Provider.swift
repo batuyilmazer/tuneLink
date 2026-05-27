@@ -8,6 +8,10 @@ struct NowPlayingEntry: TimelineEntry {
     let albumArtURL: URL?
     let isPlaying: Bool
     let partnerName: String?
+    let lastTrack: String?
+    let lastArtist: String?
+    let lastAlbumArtURL: URL?
+    let lastPlayedAt: Date?
 }
 
 struct NowPlayingResponse: Decodable {
@@ -16,6 +20,10 @@ struct NowPlayingResponse: Decodable {
     let artist: String?
     let albumArt: String?
     let partnerName: String?
+    let lastTrack: String?
+    let lastArtist: String?
+    let lastAlbumArt: String?
+    let lastPlayedAt: Double?
 }
 
 struct Provider: TimelineProvider {
@@ -28,7 +36,7 @@ struct Provider: TimelineProvider {
     }
 
     func placeholder(in context: Context) -> NowPlayingEntry {
-        NowPlayingEntry(date: .now, track: "Song Title", artist: "Artist", albumArtURL: nil, isPlaying: true, partnerName: "Partner")
+        NowPlayingEntry(date: .now, track: "Song Title", artist: "Artist", albumArtURL: nil, isPlaying: true, partnerName: "Partner", lastTrack: nil, lastArtist: nil, lastAlbumArtURL: nil, lastPlayedAt: nil)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (NowPlayingEntry) -> Void) {
@@ -58,16 +66,22 @@ struct Provider: TimelineProvider {
             let (data, _) = try await URLSession.shared.data(from: url)
             let response = try JSONDecoder().decode(NowPlayingResponse.self, from: data)
             let artURL = response.albumArt.flatMap { URL(string: $0) }
+            let lastArtURL = response.lastAlbumArt.flatMap { URL(string: $0) }
+            let lastPlayedDate = response.lastPlayedAt.map { Date(timeIntervalSince1970: $0 / 1000) }
             return NowPlayingEntry(
                 date: .now,
                 track: response.track,
                 artist: response.artist,
                 albumArtURL: artURL,
                 isPlaying: response.playing,
-                partnerName: response.partnerName
+                partnerName: response.partnerName,
+                lastTrack: response.lastTrack,
+                lastArtist: response.lastArtist,
+                lastAlbumArtURL: lastArtURL,
+                lastPlayedAt: lastPlayedDate
             )
         } catch {
-            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false, partnerName: nil)
+            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false, partnerName: nil, lastTrack: nil, lastArtist: nil, lastAlbumArtURL: nil, lastPlayedAt: nil)
         }
     }
 }

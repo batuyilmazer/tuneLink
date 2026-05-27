@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { getUserPairId, getPair, getNowPlaying, getUserDisplayName } from '../services/redis.js'
+import { getUserPairId, getPair, getNowPlaying, getLastPlayed, getUserDisplayName } from '../services/redis.js'
 
 const partner = new Hono()
 
@@ -18,7 +18,17 @@ partner.get('/partner-track', async (c) => {
   const partnerName = await getUserDisplayName(partnerId)
 
   const nowPlaying = await getNowPlaying(partnerId)
-  if (!nowPlaying) return c.json({ playing: false, partnerName })
+  if (!nowPlaying) {
+    const lastPlayed = await getLastPlayed(partnerId)
+    return c.json({
+      playing: false,
+      partnerName,
+      lastTrack: lastPlayed?.track ?? null,
+      lastArtist: lastPlayed?.artist ?? null,
+      lastAlbumArt: lastPlayed?.albumArt ?? null,
+      lastPlayedAt: lastPlayed?.timestamp ?? null,
+    })
+  }
 
   return c.json({ playing: true, partnerName, ...nowPlaying })
 })

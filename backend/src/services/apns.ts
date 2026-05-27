@@ -12,9 +12,13 @@ function getProvider(): apn.Provider | null {
 
   if (!keyPath || !keyId || !teamId || !existsSync(keyPath)) return null
 
+  // Match the aps-environment in the iOS entitlements (development vs production).
+  // Use APNS_PRODUCTION=true to switch to the production APNs endpoint.
+  const production = process.env.APNS_PRODUCTION === 'true'
+
   provider = new apn.Provider({
     token: { key: keyPath, keyId, teamId },
-    production: process.env.NODE_ENV === 'production',
+    production,
   })
 
   return provider
@@ -29,6 +33,10 @@ export async function sendSilentPush(deviceToken: string, bundleId: string): Pro
   note.pushType = 'background'
   note.priority = 5
   note.topic = bundleId
+  note.expiry = Math.floor(Date.now() / 1000) + 60
 
-  await p.send(note, deviceToken)
+  const result = await p.send(note, deviceToken)
+  if (result.failed.length > 0) {
+    console.error('[APNs] push failed:', JSON.stringify(result.failed))
+  }
 }
