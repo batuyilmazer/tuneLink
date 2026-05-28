@@ -15,7 +15,8 @@ app.route('/', partner)
 app.route('/', deviceToken)
 
 if (process.env.NODE_ENV !== 'test') {
-  serve({ fetch: app.fetch, port: 3000 }, (info) => {
+  const port = Number(process.env.PORT) || 4002
+  serve({ fetch: app.fetch, port }, (info) => {
     console.log(`tuneLink backend running on http://localhost:${info.port}`)
   })
   startPoller()
