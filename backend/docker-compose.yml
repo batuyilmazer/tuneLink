@@ -7,3 +7,5 @@ services:
       - "127.0.0.1:4002:4002"
     env_file:
       - .env
+    volumes:
+      - /server/projects/tuneLink/backend/apns.p8:/run/secrets/apns.p8:ro
