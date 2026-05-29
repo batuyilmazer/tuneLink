@@ -45,20 +45,35 @@ export async function getLastPlayed(userId: string): Promise<NowPlayingPayload |
   return raw ? (JSON.parse(raw) as NowPlayingPayload) : null
 }
 
-// --- Pairs ---
+// --- Group ---
 
-interface PairMembers {
-  userA: string
-  userB: string
+export async function addUserToGroup(userId: string): Promise<void> {
+  await redis.sadd('users:all', userId)
 }
 
-export async function setPair(pairId: string, members: PairMembers): Promise<void> {
-  await redis.set(`pair:${pairId}`, JSON.stringify(members))
+export async function removeUserFromGroup(userId: string): Promise<void> {
+  await redis.srem('users:all', userId)
+  await redis.del(
+    `user:${userId}:last_played`,
+    `user:${userId}:now_playing`,
+    `user:${userId}:displayName`,
+    `user:${userId}:device_token`,
+    `user:${userId}:session_token`,
+  )
 }
 
-export async function getPair(pairId: string): Promise<PairMembers | null> {
-  const raw = await redis.get(`pair:${pairId}`)
-  return raw ? (JSON.parse(raw) as PairMembers) : null
+export async function getAllUserIds(): Promise<string[]> {
+  return redis.smembers('users:all')
+}
+
+// --- Session Tokens ---
+
+export async function setSessionToken(userId: string, token: string): Promise<void> {
+  await redis.set(`user:${userId}:session_token`, token)
+}
+
+export async function getSessionToken(userId: string): Promise<string | null> {
+  return redis.get(`user:${userId}:session_token`)
 }
 
 // --- Display Names ---
@@ -71,12 +86,3 @@ export async function getUserDisplayName(userId: string): Promise<string | null>
   return redis.get(`user:${userId}:displayName`)
 }
 
-// --- User → PairId reverse lookup ---
-
-export async function setUserPairId(userId: string, pairId: string): Promise<void> {
-  await redis.set(`user:${userId}:pairId`, pairId)
-}
-
-export async function getUserPairId(userId: string): Promise<string | null> {
-  return redis.get(`user:${userId}:pairId`)
-}

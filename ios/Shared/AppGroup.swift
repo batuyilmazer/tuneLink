@@ -5,9 +5,7 @@ enum AppGroup {
 
     enum Keys {
         static let userId = "userId"
-        static let pairId = "pairId"
-        static let inviteCode = "inviteCode"
-        static let partnerName = "partnerName"
         static let deviceToken = "deviceToken"
+        static let sessionToken = "sessionToken"
     }
 }

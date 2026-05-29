@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**tuneLink** — Two paired users (A & B) each see the other's live Spotify now-playing track in an iOS widget (lock screen + home screen).
+**tuneLink** — A small group of friends (manually allowlisted in Spotify dev console) each see everyone else's live Spotify now-playing track in an iOS widget and main app feed.
 
 ## Architecture
 
@@ -15,9 +15,8 @@ tuneLink/
 │   ├── src/
 │   │   ├── index.ts          # Entry point, Hono app
 │   │   ├── routes/
-│   │   │   ├── auth.ts       # /auth/spotify, /auth/callback
-│   │   │   ├── partner.ts    # /partner-track
-│   │   │   └── pair.ts       # /pair (invite code matching)
+│   │   │   ├── auth.ts       # /auth/callback
+│   │   │   └── group.ts      # /group-feed
 │   │   ├── services/
 │   │   │   ├── spotify.ts    # Spotify API client + token refresh
 │   │   │   └── redis.ts      # Redis client + typed helpers
@@ -29,7 +28,7 @@ tuneLink/
     │   ├── Auth/             # PKCE flow, Spotify OAuth
     │   └── Pairing/          # Invite code UI
     └── tuneLinkWidget/       # WidgetKit extension
-        ├── Provider.swift    # TimelineProvider, calls /partner-track
+        ├── Provider.swift    # TimelineProvider, calls /group-feed
         └── WidgetView.swift  # Lock screen + home screen views
 ```
 
@@ -51,9 +50,11 @@ npm run lint       # eslint
 
 ### Redis Schema
 ```
+users:all                  → Set of all registered userIds              TTL: none
 user:{userId}:tokens       → { access_token, refresh_token }           TTL: none
 user:{userId}:now_playing  → { track, artist, albumArt, timestamp }     TTL: 60s
-pair:{pairId}              → { userA, userB }                           TTL: none
+user:{userId}:last_played  → { track, artist, albumArt, timestamp }     TTL: none
+user:{userId}:displayName  → string                                     TTL: none
 ```
 
 ### Auth Flow (PKCE)
@@ -67,7 +68,7 @@ Backend catches 401 from Spotify, pulls `refresh_token` from Redis, fetches new 
 ### Polling Architecture
 - Cron job runs every ~30s, iterates active users, calls `GET /me/player/currently-playing`
 - Writes result to `user:{userId}:now_playing` (TTL 60s)
-- Widget reads `/partner-track` → backend reads from Redis, never hits Spotify directly
+- Widget reads `/group-feed` → backend reads from Redis, never hits Spotify directly
 - Spotify scope needed: `user-read-currently-playing` or `user-read-playback-state`
 - 204 response from Spotify = user not playing → surface as "not listening" state
 
@@ -80,7 +81,7 @@ Backend catches 401 from Spotify, pulls `refresh_token` from Redis, fetches new 
 ### Widget Refresh Strategy
 - WidgetKit system budget: ~40–70 refreshes/hour (not real-time)
 - For faster updates: APNs silent push → app calls `WidgetCenter.shared.reloadAllTimelines()` in background
-- Backend detects track change during poll → sends APNs push to partner's device
+- Backend detects track change during poll → sends APNs silent push to all other group members
 
 ### Build / Test
 Use Xcode 15+. No CLI build commands defined yet — use Xcode GUI or `xcodebuild`.
@@ -99,6 +100,6 @@ APNS_KEY_PATH         # optional
 
 ## Spotify API Notes
 
-- App starts in **Development Mode**: max 25 allowlisted users — sufficient for personal A+B use
+- App starts in **Development Mode**: max 25 allowlisted users — users are manually added in the Spotify developer console
 - Extended Quota required only for public launch (Spotify manual review; social apps often rejected)
 - Poll `/v1/me/player/currently-playing` at ~30s intervals; 204 = nothing playing

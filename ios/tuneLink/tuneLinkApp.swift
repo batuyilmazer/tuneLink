@@ -14,7 +14,7 @@ struct tuneLinkApp: App {
                 LoginView()
                     .environmentObject(authManager)
             } else {
-                PairingView()
+                GroupFeedView()
             }
         }
     }

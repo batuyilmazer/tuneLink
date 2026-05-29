@@ -1,8 +1,7 @@
 import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
 import auth from './routes/auth.js'
-import pair from './routes/pair.js'
-import partner from './routes/partner.js'
+import group from './routes/group.js'
 import deviceToken from './routes/deviceToken.js'
 import debug from './routes/debug.js'
 import { startPoller } from './jobs/poller.js'
@@ -11,8 +10,7 @@ const app = new Hono()
 
 app.get('/', (c) => c.json({ status: 'ok' }))
 app.route('/auth', auth)
-app.route('/pair', pair)
-app.route('/', partner)
+app.route('/', group)
 app.route('/', deviceToken)
 app.route('/', debug)
 

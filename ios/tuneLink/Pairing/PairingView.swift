@@ -1,357 +1,231 @@
 import SwiftUI
+import WidgetKit
 
-private enum PairingStep {
-    case shareCode, enterCode, connected
+struct MemberStatus: Identifiable, Decodable {
+    let userId: String
+    let displayName: String
+    let playing: Bool
+    let track: String?
+    let artist: String?
+    let albumArt: String?
+    let timestamp: Double?
+    let lastTrack: String?
+    let lastArtist: String?
+    let lastAlbumArt: String?
+    let lastPlayedAt: Double?
+
+    var id: String { userId }
+
+    var albumArtURL: URL? { albumArt.flatMap { URL(string: $0) } }
+    var lastAlbumArtURL: URL? { lastAlbumArt.flatMap { URL(string: $0) } }
+    var lastPlayedDate: Date? { lastPlayedAt.map { Date(timeIntervalSince1970: $0 / 1000) } }
 }
 
-struct PairingView: View {
+struct GroupFeedView: View {
     private let baseURL: String = {
         Bundle.main.object(forInfoDictionaryKey: "BASE_URL") as? String ?? "http://localhost:3000"
     }()
 
-    private var defaults: UserDefaults? { UserDefaults(suiteName: AppGroup.suiteName) }
+    @AppStorage("userId", store: UserDefaults(suiteName: AppGroup.suiteName))
+    private var userId: String = ""
 
-    private var userId: String { defaults?.string(forKey: AppGroup.Keys.userId) ?? "" }
-
-    @State private var step: PairingStep = .shareCode
-    @State private var inviteCode: String = ""
-    @State private var partnerCode: String = ""
+    @State private var members: [MemberStatus] = []
     @State private var isLoading = false
-    @State private var isSubmitting = false
     @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
             Group {
-                switch step {
-                case .shareCode:
-                    ShareCodeView(
-                        inviteCode: inviteCode,
-                        isLoading: isLoading,
-                        onEnterCode: { step = .enterCode }
-                    )
-                case .enterCode:
-                    EnterCodeView(
-                        partnerCode: $partnerCode,
-                        isSubmitting: isSubmitting,
-                        errorMessage: errorMessage,
-                        onBack: { step = .shareCode; errorMessage = nil },
-                        onPair: { Task { await submitPairing() } }
-                    )
-                case .connected:
-                    ConnectedView(onUnpair: unpair)
+                if isLoading && members.isEmpty {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if members.isEmpty {
+                    emptyState
+                } else {
+                    memberList
                 }
             }
-            .navigationTitle(navigationTitle)
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("tuneLink")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Çıkış", action: logout)
+                        .foregroundStyle(.secondary)
+                        .font(.subheadline)
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    if isLoading {
+                        ProgressView().scaleEffect(0.75)
+                    } else {
+                        Button(action: { Task { await fetchFeed() } }) {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                    }
+                }
+            }
         }
-        .onAppear { initialize() }
+        .task { await fetchFeed() }
     }
 
-    private var navigationTitle: String {
-        switch step {
-        case .shareCode: return "Eşleş"
-        case .enterCode: return "Kodu Gir"
-        case .connected: return "Bağlı"
+    // MARK: - Subviews
+
+    private var memberList: some View {
+        List(members) { member in
+            MemberRow(member: member)
         }
+        .listStyle(.plain)
+        .refreshable { await fetchFeed() }
     }
 
-    // MARK: - Init
-
-    private func initialize() {
-        if defaults?.string(forKey: AppGroup.Keys.pairId) != nil {
-            step = .connected
-            return
+    private var emptyState: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "person.2.slash")
+                .font(.system(size: 48))
+                .foregroundStyle(.secondary)
+            Text("Henüz kimse yok")
+                .font(.title3.bold())
+            Text("Arkadaşların uygulamaya giriş yaptığında burada görünecekler.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
         }
-        Task { await fetchInviteCode() }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: - Network
 
-    private func fetchInviteCode() async {
+    private func fetchFeed() async {
         guard !userId.isEmpty else { return }
         isLoading = true
         defer { isLoading = false }
-
-        do {
-            var req = URLRequest(url: URL(string: "\(baseURL)/pair/invite")!)
-            req.httpMethod = "POST"
-            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            req.httpBody = try JSONEncoder().encode(["userId": userId])
-
-            let (data, _) = try await URLSession.shared.data(for: req)
-            let body = try JSONDecoder().decode([String: String].self, from: data)
-            if let code = body["inviteCode"] {
-                inviteCode = code
-                defaults?.set(code, forKey: AppGroup.Keys.inviteCode)
-            }
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-
-    private func submitPairing() async {
-        isSubmitting = true
-        defer { isSubmitting = false }
         errorMessage = nil
 
         do {
-            var req = URLRequest(url: URL(string: "\(baseURL)/pair")!)
-            req.httpMethod = "POST"
-            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            req.httpBody = try JSONEncoder().encode([
-                "inviteCode": partnerCode.trimmingCharacters(in: .whitespaces),
-                "userId": userId,
-            ])
-
-            let (data, _) = try await URLSession.shared.data(for: req)
-            let body = try JSONDecoder().decode([String: String].self, from: data)
-
-            guard let pairId = body["pairId"] else {
-                errorMessage = body["error"] ?? "Geçersiz veya süresi dolmuş kod."
+            guard let url = URL(string: "\(baseURL)/group-feed?userId=\(userId)") else {
+                errorMessage = "Invalid server URL"
                 return
             }
-
-            defaults?.set(pairId, forKey: AppGroup.Keys.pairId)
-            defaults?.removeObject(forKey: AppGroup.Keys.inviteCode)
-            step = .connected
+            let (data, _) = try await URLSession.shared.data(from: url)
+            members = try JSONDecoder().decode([MemberStatus].self, from: data)
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
-    // MARK: - Unpair
+    // MARK: - Logout
 
-    private func unpair() {
-        defaults?.removeObject(forKey: AppGroup.Keys.pairId)
-        defaults?.removeObject(forKey: AppGroup.Keys.inviteCode)
-        inviteCode = ""
-        partnerCode = ""
-        errorMessage = nil
-        step = .shareCode
-        Task { await fetchInviteCode() }
+    private func logout() {
+        Task {
+            let defaults = UserDefaults(suiteName: AppGroup.suiteName)
+            let sessionToken = defaults?.string(forKey: AppGroup.Keys.sessionToken) ?? ""
+            if !userId.isEmpty, !sessionToken.isEmpty, let url = URL(string: "\(baseURL)/auth/logout") {
+                var req = URLRequest(url: url)
+                req.httpMethod = "DELETE"
+                req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                req.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
+                req.httpBody = try? JSONSerialization.data(withJSONObject: ["userId": userId])
+                try? await URLSession.shared.data(for: req)
+            }
+            defaults?.removeObject(forKey: AppGroup.Keys.deviceToken)
+            defaults?.removeObject(forKey: AppGroup.Keys.sessionToken)
+            userId = ""
+        }
     }
 }
 
-// MARK: - Step 1: Share Code
+// MARK: - Member Row
 
-private struct ShareCodeView: View {
-    let inviteCode: String
-    let isLoading: Bool
-    let onEnterCode: () -> Void
+private struct MemberRow: View {
+    let member: MemberStatus
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        HStack(spacing: 14) {
+            albumArt
+            info
+            Spacer(minLength: 0)
+            statusBadge
+        }
+        .padding(.vertical, 6)
+    }
 
-            VStack(spacing: 24) {
-                Text("Kodunu paylaş")
-                    .font(.title2.bold())
+    @ViewBuilder
+    private var albumArt: some View {
+        let url = member.playing ? member.albumArtURL : member.lastAlbumArtURL
+        Group {
+            if let url {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let img): img.resizable().scaledToFill()
+                    default: artPlaceholder
+                    }
+                }
+            } else {
+                artPlaceholder
+            }
+        }
+        .frame(width: 52, height: 52)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .opacity(member.playing ? 1.0 : 0.45)
+    }
 
-                Text("Bu kodu partnerine gönder. Partner bu kodu uygulamaya girdikten sonra bağlanırsınız.")
+    private var artPlaceholder: some View {
+        RoundedRectangle(cornerRadius: 8)
+            .fill(Color.secondary.opacity(0.2))
+            .overlay(Image(systemName: "music.note").foregroundStyle(.secondary))
+    }
+
+    @ViewBuilder
+    private var info: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(member.displayName)
+                .font(.subheadline.bold())
+                .lineLimit(1)
+
+            if member.playing, let track = member.track, let artist = member.artist {
+                Text(track)
+                    .font(.subheadline)
+                    .lineLimit(1)
+                Text(artist)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            } else if let track = member.lastTrack, let artist = member.lastArtist {
+                Text(track)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-
-                if isLoading {
-                    ProgressView()
-                        .frame(height: 64)
-                } else {
-                    Text(inviteCode.isEmpty ? "------" : inviteCode)
-                        .font(.system(size: 42, weight: .bold, design: .monospaced))
-                        .tracking(8)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 20)
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .padding(.horizontal)
-                }
-
-                HStack(spacing: 12) {
-                    Button {
-                        UIPasteboard.general.string = inviteCode
-                    } label: {
-                        Label("Kopyala", systemImage: "doc.on.doc")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .disabled(inviteCode.isEmpty)
-
-                    if !inviteCode.isEmpty {
-                        ShareLink(item: "tuneLink davet kodum: \(inviteCode)") {
-                            Label("Paylaş", systemImage: "square.and.arrow.up")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                }
-                .padding(.horizontal)
-
-                Text("10 dakika geçerlidir")
+                    .lineLimit(1)
+                Text(artist)
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+            } else {
+                Text("Şu an dinlemiyor")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
+        }
+    }
 
-            Spacer()
-
-            Divider()
-
-            Button(action: onEnterCode) {
-                HStack {
-                    Text("Partnerimin kodu var")
-                    Image(systemName: "chevron.right")
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-            }
-            .foregroundStyle(.primary)
+    @ViewBuilder
+    private var statusBadge: some View {
+        if member.playing {
+            Image(systemName: "music.note")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.green)
+        } else if let date = member.lastPlayedDate {
+            Text(relativeTime(date))
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
         }
     }
 }
 
-// MARK: - Step 2: Enter Code
-
-private struct EnterCodeView: View {
-    @Binding var partnerCode: String
-    let isSubmitting: Bool
-    let errorMessage: String?
-    let onBack: () -> Void
-    let onPair: () -> Void
-
-    var body: some View {
-        VStack(spacing: 32) {
-            Spacer()
-
-            VStack(spacing: 16) {
-                Text("Partnerin kodunu gir")
-                    .font(.title2.bold())
-
-                Text("Partnerin size ilettiği 6 haneli kodu gir.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-            }
-
-            TextField("A3F9B2", text: $partnerCode)
-                .font(.system(size: 36, weight: .bold, design: .monospaced))
-                .tracking(6)
-                .multilineTextAlignment(.center)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.characters)
-                .padding(.vertical, 20)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .padding(.horizontal)
-
-            if let msg = errorMessage {
-                Text(msg)
-                    .font(.subheadline)
-                    .foregroundStyle(.red)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-            }
-
-            Button(action: onPair) {
-                Group {
-                    if isSubmitting {
-                        ProgressView()
-                    } else {
-                        Text("Eşleş")
-                            .font(.headline)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.green)
-                .foregroundStyle(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-            }
-            .disabled(partnerCode.trimmingCharacters(in: .whitespaces).isEmpty || isSubmitting)
-            .padding(.horizontal)
-
-            Spacer()
-
-            Button(action: onBack) {
-                HStack(spacing: 4) {
-                    Image(systemName: "chevron.left")
-                    Text("Kendi koduma dön")
-                }
-                .font(.subheadline)
-            }
-            .foregroundStyle(.secondary)
-            .padding(.bottom)
-        }
-    }
-}
-
-// MARK: - Step 3: Connected
-
-private struct ConnectedView: View {
-    let onUnpair: () -> Void
-
-    var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-
-            VStack(spacing: 24) {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 64))
-                    .foregroundStyle(.green)
-
-                VStack(spacing: 8) {
-                    Text("Bağlandınız!")
-                        .font(.title.bold())
-
-                    Text("Artık partnerinin dinlediklerini widget'ta görebilirsin.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                }
-            }
-
-            Spacer()
-
-            VStack(alignment: .leading, spacing: 0) {
-                Text("Widget'ı nasıl eklersin")
-                    .font(.headline)
-                    .padding(.bottom, 16)
-
-                widgetStep("1", "Ana ekranı uzun bas")
-                widgetStep("2", "Sol üstteki \"+\" ye dokun")
-                widgetStep("3", "\"tuneLink\" ara ve widget'ı ekle")
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(20)
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .padding(.horizontal)
-
-            Spacer()
-
-            Button(role: .destructive, action: onUnpair) {
-                Text("Eşleşmeyi sıfırla")
-                    .font(.subheadline)
-            }
-            .foregroundStyle(.secondary)
-            .padding(.bottom)
-        }
-    }
-
-    private func widgetStep(_ number: String, _ label: String) -> some View {
-        HStack(spacing: 14) {
-            Text(number)
-                .font(.system(.callout, design: .rounded).bold())
-                .foregroundStyle(.white)
-                .frame(width: 28, height: 28)
-                .background(Color.green)
-                .clipShape(Circle())
-
-            Text(label)
-                .font(.subheadline)
-        }
-        .padding(.bottom, 14)
-    }
+private func relativeTime(_ date: Date) -> String {
+    let seconds = Int(Date.now.timeIntervalSince(date))
+    if seconds < 60 { return "\(seconds)s önce" }
+    let minutes = seconds / 60
+    if minutes < 60 { return "\(minutes)dk önce" }
+    let hours = minutes / 60
+    if hours < 24 { return "\(hours)sa önce" }
+    return "\(hours / 24)g önce"
 }

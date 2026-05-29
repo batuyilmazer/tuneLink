@@ -1,29 +1,31 @@
 import WidgetKit
 import SwiftUI
 
-struct NowPlayingEntry: TimelineEntry {
-    let date: Date
-    let track: String?
-    let artist: String?
-    let albumArtURL: URL?
-    let isPlaying: Bool
-    let partnerName: String?
-    let lastTrack: String?
-    let lastArtist: String?
-    let lastAlbumArtURL: URL?
-    let lastPlayedAt: Date?
-}
-
-struct NowPlayingResponse: Decodable {
+struct MemberStatusWidget: Decodable {
+    let userId: String
+    let displayName: String
     let playing: Bool
     let track: String?
     let artist: String?
     let albumArt: String?
-    let partnerName: String?
+    let timestamp: Double?
     let lastTrack: String?
     let lastArtist: String?
     let lastAlbumArt: String?
     let lastPlayedAt: Double?
+
+    var albumArtURL: URL? { albumArt.flatMap { URL(string: $0) } }
+    var lastAlbumArtURL: URL? { lastAlbumArt.flatMap { URL(string: $0) } }
+    var lastPlayedDate: Date? { lastPlayedAt.map { Date(timeIntervalSince1970: $0 / 1000) } }
+}
+
+struct GroupEntry: TimelineEntry {
+    let date: Date
+    let members: [MemberStatusWidget]
+
+    var primary: MemberStatusWidget? {
+        members.first(where: { $0.playing }) ?? members.first
+    }
 }
 
 struct Provider: TimelineProvider {
@@ -35,53 +37,42 @@ struct Provider: TimelineProvider {
         UserDefaults(suiteName: AppGroup.suiteName)?.string(forKey: AppGroup.Keys.userId) ?? ""
     }
 
-    func placeholder(in context: Context) -> NowPlayingEntry {
-        NowPlayingEntry(date: .now, track: "Song Title", artist: "Artist", albumArtURL: nil, isPlaying: true, partnerName: "Partner", lastTrack: nil, lastArtist: nil, lastAlbumArtURL: nil, lastPlayedAt: nil)
+    func placeholder(in context: Context) -> GroupEntry {
+        let sample = MemberStatusWidget(
+            userId: "sample", displayName: "Arkadaş", playing: true,
+            track: "Song Title", artist: "Artist Name", albumArt: nil, timestamp: nil,
+            lastTrack: nil, lastArtist: nil, lastAlbumArt: nil, lastPlayedAt: nil
+        )
+        return GroupEntry(date: .now, members: [sample])
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (NowPlayingEntry) -> Void) {
+    func getSnapshot(in context: Context, completion: @escaping (GroupEntry) -> Void) {
         Task {
             let entry = await fetchEntry()
             completion(entry)
         }
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<NowPlayingEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<GroupEntry>) -> Void) {
         Task {
             let entry = await fetchEntry()
-            // Refresh after 5 minutes as a fallback; APNs push triggers earlier reloads
             let nextRefresh = Calendar.current.date(byAdding: .minute, value: 5, to: .now)!
-            let timeline = Timeline(entries: [entry], policy: .after(nextRefresh))
-            completion(timeline)
+            completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }
     }
 
-    private func fetchEntry() async -> NowPlayingEntry {
+    private func fetchEntry() async -> GroupEntry {
         guard !userId.isEmpty,
-              let url = URL(string: "\(baseURL)/partner-track?userId=\(userId)") else {
-            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false, partnerName: nil, lastTrack: nil, lastArtist: nil, lastAlbumArtURL: nil, lastPlayedAt: nil)
+              let url = URL(string: "\(baseURL)/group-feed?userId=\(userId)") else {
+            return GroupEntry(date: .now, members: [])
         }
 
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            let response = try JSONDecoder().decode(NowPlayingResponse.self, from: data)
-            let artURL = response.albumArt.flatMap { URL(string: $0) }
-            let lastArtURL = response.lastAlbumArt.flatMap { URL(string: $0) }
-            let lastPlayedDate = response.lastPlayedAt.map { Date(timeIntervalSince1970: $0 / 1000) }
-            return NowPlayingEntry(
-                date: .now,
-                track: response.track,
-                artist: response.artist,
-                albumArtURL: artURL,
-                isPlaying: response.playing,
-                partnerName: response.partnerName,
-                lastTrack: response.lastTrack,
-                lastArtist: response.lastArtist,
-                lastAlbumArtURL: lastArtURL,
-                lastPlayedAt: lastPlayedDate
-            )
+            let members = try JSONDecoder().decode([MemberStatusWidget].self, from: data)
+            return GroupEntry(date: .now, members: members)
         } catch {
-            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false, partnerName: nil, lastTrack: nil, lastArtist: nil, lastAlbumArtURL: nil, lastPlayedAt: nil)
+            return GroupEntry(date: .now, members: [])
         }
     }
 }

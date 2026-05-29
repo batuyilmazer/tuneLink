@@ -1,9 +1,23 @@
 import cron from 'node-cron'
-import { redis, setNowPlaying, getNowPlaying, setLastPlayed, getUserPairId, getPair } from '../services/redis.js'
+import { redis, setNowPlaying, getNowPlaying, setLastPlayed, getAllUserIds, addUserToGroup } from '../services/redis.js'
 import { fetchNowPlaying } from '../services/spotify.js'
 import { sendSilentPush } from '../services/apns.js'
 
 const BUNDLE_ID = process.env.APNS_BUNDLE_ID ?? 'pizza.bira.tuneLink'
+
+async function notifyAllOthers(exceptUserId: string): Promise<void> {
+  const allUserIds = await getAllUserIds()
+  await Promise.all(
+    allUserIds
+      .filter((id) => id !== exceptUserId)
+      .map(async (id) => {
+        const deviceToken = await redis.get(`user:${id}:device_token`)
+        if (deviceToken) {
+          await sendSilentPush(deviceToken, BUNDLE_ID)
+        }
+      }),
+  )
+}
 
 async function pollAllUsers(): Promise<void> {
   let cursor = '0'
@@ -16,6 +30,8 @@ async function pollAllUsers(): Promise<void> {
       const userId = key.split(':')[1]
       if (!userId) continue
 
+      await addUserToGroup(userId)
+
       try {
         const previous = await getNowPlaying(userId)
         const nowPlaying = await fetchNowPlaying(userId)
@@ -24,35 +40,12 @@ async function pollAllUsers(): Promise<void> {
           await setNowPlaying(userId, nowPlaying)
           await setLastPlayed(userId, nowPlaying)
 
-          const trackChanged = previous?.track !== nowPlaying.track
-
-          if (trackChanged) {
-            const pairId = await getUserPairId(userId)
-            if (pairId) {
-              const members = await getPair(pairId)
-              if (members) {
-                const partnerId = members.userA === userId ? members.userB : members.userA
-                const partnerDeviceToken = await redis.get(`user:${partnerId}:device_token`)
-                if (partnerDeviceToken) {
-                  await sendSilentPush(partnerDeviceToken, BUNDLE_ID)
-                }
-              }
-            }
+          if (previous?.track !== nowPlaying.track) {
+            await notifyAllOthers(userId)
           }
         } else if (previous) {
-          // User stopped listening — clear stale key immediately and notify partner
           await redis.del(`user:${userId}:now_playing`)
-          const pairId = await getUserPairId(userId)
-          if (pairId) {
-            const members = await getPair(pairId)
-            if (members) {
-              const partnerId = members.userA === userId ? members.userB : members.userA
-              const partnerDeviceToken = await redis.get(`user:${partnerId}:device_token`)
-              if (partnerDeviceToken) {
-                await sendSilentPush(partnerDeviceToken, BUNDLE_ID)
-              }
-            }
-          }
+          await notifyAllOthers(userId)
         }
       } catch (err) {
         console.error(`[poller] error polling user ${userId}:`, err)
@@ -63,8 +56,6 @@ async function pollAllUsers(): Promise<void> {
 
 export function startPoller(): void {
   cron.schedule('*/30 * * * * *', () => {
-    pollAllUsers().catch(() => {
-      // swallow unhandled rejection to keep the cron alive
-    })
+    pollAllUsers().catch(() => {})
   })
 }

@@ -1,7 +1,6 @@
 import SwiftUI
 import WidgetKit
 
-// iOS 16/17 compat: containerBackground(for:) is iOS 17+
 extension View {
     @ViewBuilder
     func widgetBackground<B: View>(@ViewBuilder background: () -> B) -> some View {
@@ -13,9 +12,10 @@ extension View {
     }
 }
 
-// 12.2 — Home screen widget view
+// MARK: - Home Screen Widget
+
 struct HomeWidgetView: View {
-    let entry: NowPlayingEntry
+    let entry: GroupEntry
     @Environment(\.widgetFamily) var family
 
     var body: some View {
@@ -25,20 +25,68 @@ struct HomeWidgetView: View {
 
     @ViewBuilder
     private var content: some View {
-        if family == .systemSmall {
-            smallContent
-        } else {
+        if family == .systemMedium {
             mediumContent
+        } else {
+            smallContent
         }
     }
 
-    // Small widget: vertical stack — album art, track, artist, partner name at bottom
+    // Small: show the most relevant member (first playing, else first with last track)
     @ViewBuilder
     private var smallContent: some View {
-        if entry.isPlaying, let track = entry.track, let artist = entry.artist {
+        if let member = entry.primary {
+            MemberSmallView(member: member)
+        } else {
+            emptyView
+        }
+    }
+
+    // Medium: show up to 2 members side by side
+    @ViewBuilder
+    private var mediumContent: some View {
+        let visible = Array(entry.members.prefix(2))
+        if visible.isEmpty {
+            emptyView
+        } else if visible.count == 1 {
+            MemberMediumRowView(member: visible[0])
+                .padding(10)
+        } else {
+            VStack(spacing: 0) {
+                MemberMediumRowView(member: visible[0])
+                Divider()
+                MemberMediumRowView(member: visible[1])
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+        }
+    }
+
+    private var emptyView: some View {
+        VStack(spacing: 6) {
+            Image(systemName: "music.note.list")
+                .font(.system(size: 22))
+                .foregroundStyle(.secondary)
+            Text("Kimse dinlemiyor")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(8)
+    }
+}
+
+// MARK: - Small member cell
+
+private struct MemberSmallView: View {
+    let member: MemberStatusWidget
+
+    var body: some View {
+        if member.playing, let track = member.track, let artist = member.artist {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    AlbumArtView(url: entry.albumArtURL, size: 56)
+                    AlbumArtView(url: member.albumArtURL, size: 56)
                     Spacer(minLength: 0)
                 }
                 Spacer(minLength: 6)
@@ -46,24 +94,22 @@ struct HomeWidgetView: View {
                     .font(.system(size: 12, weight: .semibold))
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
-                    .truncationMode(.tail)
                 Text(artist)
                     .font(.system(size: 10))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
-                    .truncationMode(.tail)
                     .padding(.top, 2)
                 Spacer(minLength: 4)
-                Text("♫ \(entry.partnerName ?? "Partner")")
+                Text("♫ \(member.displayName)")
                     .font(.system(size: 9))
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
             }
             .padding(8)
-        } else if let track = entry.lastTrack, let artist = entry.lastArtist {
+        } else if let track = member.lastTrack, let artist = member.lastArtist {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    AlbumArtView(url: entry.lastAlbumArtURL, size: 56, dimmed: true)
+                    AlbumArtView(url: member.lastAlbumArtURL, size: 56, dimmed: true)
                     Spacer(minLength: 0)
                 }
                 Spacer(minLength: 6)
@@ -72,15 +118,13 @@ struct HomeWidgetView: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
-                    .truncationMode(.tail)
                 Text(artist)
                     .font(.system(size: 10))
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
-                    .truncationMode(.tail)
                     .padding(.top, 2)
                 Spacer(minLength: 4)
-                Text(entry.lastPlayedAt.map { relativeTime($0) } ?? "")
+                Text(member.lastPlayedDate.map { relativeTime($0) } ?? member.displayName)
                     .font(.system(size: 9))
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
@@ -92,7 +136,7 @@ struct HomeWidgetView: View {
                     .font(.system(size: 22))
                     .foregroundStyle(.secondary)
                 Spacer(minLength: 0)
-                Text("\(entry.partnerName ?? "Partner") dinlemiyor")
+                Text("\(member.displayName) dinlemiyor")
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
@@ -101,94 +145,103 @@ struct HomeWidgetView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
     }
+}
 
-    // Medium widget: horizontal layout with partner name label
-    @ViewBuilder
-    private var mediumContent: some View {
-        if entry.isPlaying, let track = entry.track, let artist = entry.artist {
-            HStack(spacing: 10) {
-                AlbumArtView(url: entry.albumArtURL, size: 54)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(entry.partnerName ?? "Partner")
-                        .font(.system(size: 9))
-                        .foregroundStyle(.tertiary)
-                        .lineLimit(1)
+// MARK: - Medium member row
+
+private struct MemberMediumRowView: View {
+    let member: MemberStatusWidget
+
+    var body: some View {
+        HStack(spacing: 10) {
+            let artURL = member.playing ? member.albumArtURL : member.lastAlbumArtURL
+            AlbumArtView(url: artURL, size: 40, dimmed: !member.playing)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(member.displayName)
+                    .font(.system(size: 9))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+
+                if member.playing, let track = member.track, let artist = member.artist {
                     Text(track)
-                        .font(.system(size: 13, weight: .semibold))
-                        .lineLimit(2)
+                        .font(.system(size: 12, weight: .semibold))
+                        .lineLimit(1)
                     Text(artist)
-                        .font(.system(size: 11))
+                        .font(.system(size: 10))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
-                }
-                Spacer(minLength: 0)
-            }
-            .padding(8)
-        } else if let track = entry.lastTrack, let artist = entry.lastArtist {
-            HStack(spacing: 10) {
-                AlbumArtView(url: entry.lastAlbumArtURL, size: 54, dimmed: true)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(entry.lastPlayedAt.map { relativeTime($0) } ?? "")
-                        .font(.system(size: 9))
-                        .foregroundStyle(.tertiary)
-                        .lineLimit(1)
+                } else if let track = member.lastTrack {
                     Text(track)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                    Text(artist)
+                        .lineLimit(1)
+                    if let date = member.lastPlayedDate {
+                        Text(relativeTime(date))
+                            .font(.system(size: 10))
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(1)
+                    }
+                } else {
+                    Text("Dinlemiyor")
                         .font(.system(size: 11))
                         .foregroundStyle(.tertiary)
-                        .lineLimit(1)
                 }
-                Spacer(minLength: 0)
             }
-            .padding(8)
-        } else {
-            Text("\(entry.partnerName ?? "Partner") dinlemiyor")
-                .font(.system(size: 13))
-                .foregroundStyle(.secondary)
-                .padding(8)
+            Spacer(minLength: 0)
+
+            if member.playing {
+                Image(systemName: "music.note")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.green)
+            }
         }
+        .padding(.vertical, 4)
     }
 }
 
-// 12.3 — Lock screen accessory views
+// MARK: - Lock Screen
+
 struct AccessoryRectangularView: View {
-    let entry: NowPlayingEntry
+    let entry: GroupEntry
 
     var body: some View {
-        content
-            .widgetBackground { }
+        content.widgetBackground { }
     }
 
     @ViewBuilder
     private var content: some View {
-        if entry.isPlaying, let track = entry.track, let artist = entry.artist {
-            VStack(alignment: .leading, spacing: 1) {
-                Label(track, systemImage: "music.note")
-                    .font(.system(size: 11, weight: .medium))
-                    .lineLimit(1)
-                Text(artist)
-                    .font(.system(size: 10))
-                    .lineLimit(1)
-            }
-        } else if let track = entry.lastTrack, let artist = entry.lastArtist {
-            VStack(alignment: .leading, spacing: 1) {
-                Label(track, systemImage: "music.note")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                HStack(spacing: 4) {
-                    Text(artist)
-                        .font(.system(size: 10))
+        if let member = entry.primary {
+            if member.playing, let track = member.track, let artist = member.artist {
+                VStack(alignment: .leading, spacing: 1) {
+                    Label(track, systemImage: "music.note")
+                        .font(.system(size: 11, weight: .medium))
                         .lineLimit(1)
-                    if let date = entry.lastPlayedAt {
-                        Text("· \(relativeTime(date))")
-                            .font(.system(size: 10))
+                    HStack(spacing: 4) {
+                        Text(artist).lineLimit(1)
+                        Text("· \(member.displayName)")
                     }
+                    .font(.system(size: 10))
+                    .foregroundStyle(.secondary)
                 }
-                .foregroundStyle(.tertiary)
+            } else if let track = member.lastTrack, let artist = member.lastArtist {
+                VStack(alignment: .leading, spacing: 1) {
+                    Label(track, systemImage: "music.note")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                    HStack(spacing: 4) {
+                        Text(artist).lineLimit(1)
+                        if let date = member.lastPlayedDate {
+                            Text("· \(relativeTime(date))")
+                        }
+                    }
+                    .font(.system(size: 10))
+                    .foregroundStyle(.tertiary)
+                }
+            } else {
+                Label("\(member.displayName) dinlemiyor", systemImage: "music.note.list")
+                    .font(.system(size: 11))
             }
         } else {
             Label("Not listening", systemImage: "music.note.list")
@@ -198,33 +251,37 @@ struct AccessoryRectangularView: View {
 }
 
 struct AccessoryCircularView: View {
-    let entry: NowPlayingEntry
+    let entry: GroupEntry
 
     var body: some View {
-        content
-            .widgetBackground { }
+        content.widgetBackground { }
     }
 
     @ViewBuilder
     private var content: some View {
-        if entry.isPlaying {
-            ZStack {
-                AlbumArtView(url: entry.albumArtURL, size: 40)
-                Image(systemName: "music.note")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.white)
-                    .shadow(radius: 2)
+        if let member = entry.primary {
+            if member.playing {
+                ZStack {
+                    AlbumArtView(url: member.albumArtURL, size: 40)
+                    Image(systemName: "music.note")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.white)
+                        .shadow(radius: 2)
+                }
+            } else if member.lastAlbumArtURL != nil {
+                AlbumArtView(url: member.lastAlbumArtURL, size: 40, dimmed: true)
+            } else {
+                Image(systemName: "music.note.list").font(.system(size: 16))
             }
-        } else if entry.lastAlbumArtURL != nil {
-            AlbumArtView(url: entry.lastAlbumArtURL, size: 40, dimmed: true)
         } else {
-            Image(systemName: "music.note.list")
-                .font(.system(size: 16))
+            Image(systemName: "music.note.list").font(.system(size: 16))
         }
     }
 }
 
-private struct AlbumArtView: View {
+// MARK: - Shared Helpers
+
+struct AlbumArtView: View {
     let url: URL?
     let size: CGFloat
     var dimmed: Bool = false
@@ -234,10 +291,8 @@ private struct AlbumArtView: View {
             if let url {
                 AsyncImage(url: url) { phase in
                     switch phase {
-                    case .success(let image):
-                        image.resizable().scaledToFill()
-                    default:
-                        placeholder
+                    case .success(let image): image.resizable().scaledToFill()
+                    default: placeholder
                     }
                 }
             } else {
@@ -256,13 +311,12 @@ private struct AlbumArtView: View {
     }
 }
 
-private func relativeTime(_ date: Date) -> String {
+func relativeTime(_ date: Date) -> String {
     let seconds = Int(Date.now.timeIntervalSince(date))
     if seconds < 60 { return "\(seconds)s önce" }
     let minutes = seconds / 60
     if minutes < 60 { return "\(minutes)dk önce" }
     let hours = minutes / 60
-    if hours < 24 { return "\(hours)s önce" }
-    let days = hours / 24
-    return "\(days)g önce"
+    if hours < 24 { return "\(hours)sa önce" }
+    return "\(hours / 24)g önce"
 }

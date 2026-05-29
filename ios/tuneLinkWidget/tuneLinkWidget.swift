@@ -11,7 +11,7 @@ struct tuneLinkWidget: Widget {
             tuneLinkWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("tuneLink")
-        .description("See what your partner is listening to.")
+        .description("See what your friends are listening to.")
         .supportedFamilies([
             .systemSmall,
             .systemMedium,
@@ -23,7 +23,7 @@ struct tuneLinkWidget: Widget {
 
 struct tuneLinkWidgetEntryView: View {
     @Environment(\.widgetFamily) var family
-    let entry: NowPlayingEntry
+    let entry: GroupEntry
 
     var body: some View {
         switch family {
