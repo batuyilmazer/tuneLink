@@ -37,6 +37,10 @@ struct Provider: TimelineProvider {
         UserDefaults(suiteName: AppGroup.suiteName)?.string(forKey: AppGroup.Keys.userId) ?? ""
     }
 
+    private var sessionToken: String {
+        UserDefaults(suiteName: AppGroup.suiteName)?.string(forKey: AppGroup.Keys.sessionToken) ?? ""
+    }
+
     func placeholder(in context: Context) -> GroupEntry {
         let sample = MemberStatusWidget(
             userId: "sample", displayName: "Arkadaş", playing: true,
@@ -68,7 +72,9 @@ struct Provider: TimelineProvider {
         }
 
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
+            let (data, _) = try await URLSession.shared.data(for: request)
             let members = try JSONDecoder().decode([MemberStatusWidget].self, from: data)
             return GroupEntry(date: .now, members: members)
         } catch {

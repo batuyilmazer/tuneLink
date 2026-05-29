@@ -78,16 +78,24 @@ struct GroupFeedView: View {
 
     private var emptyState: some View {
         VStack(spacing: 16) {
-            Image(systemName: "person.2.slash")
+            Image(systemName: errorMessage != nil ? "exclamationmark.triangle" : "person.2.slash")
                 .font(.system(size: 48))
-                .foregroundStyle(.secondary)
-            Text("Henüz kimse yok")
+                .foregroundStyle(errorMessage != nil ? .red : .secondary)
+            Text(errorMessage != nil ? "Bağlantı hatası" : "Henüz kimse yok")
                 .font(.title3.bold())
-            Text("Arkadaşların uygulamaya giriş yaptığında burada görünecekler.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
+            if let error = errorMessage {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+            } else {
+                Text("Arkadaşların uygulamaya giriş yaptığında burada görünecekler.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -101,11 +109,28 @@ struct GroupFeedView: View {
         errorMessage = nil
 
         do {
-            guard let url = URL(string: "\(baseURL)/group-feed?userId=\(userId)") else {
+            var components = URLComponents(string: "\(baseURL)/group-feed")!
+            components.queryItems = [URLQueryItem(name: "userId", value: userId)]
+            guard let url = components.url else {
                 errorMessage = "Invalid server URL"
                 return
             }
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let sessionToken = UserDefaults(suiteName: AppGroup.suiteName)?.string(forKey: AppGroup.Keys.sessionToken) ?? ""
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
+            let (data, response) = try await URLSession.shared.data(for: request)
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+            if statusCode == 401 || statusCode == 403 {
+                // Session expired — force re-login
+                UserDefaults(suiteName: AppGroup.suiteName)?.removeObject(forKey: AppGroup.Keys.sessionToken)
+                userId = ""
+                return
+            }
+            if statusCode < 200 || statusCode >= 300 {
+                let serverError = (try? JSONDecoder().decode([String: String].self, from: data))?["error"]
+                errorMessage = serverError ?? "Sunucu hatası (\(statusCode))"
+                return
+            }
             members = try JSONDecoder().decode([MemberStatus].self, from: data)
         } catch {
             errorMessage = error.localizedDescription

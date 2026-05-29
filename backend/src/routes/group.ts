@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { getAllUserIds, getNowPlaying, getLastPlayed, getUserDisplayName } from '../services/redis.js'
+import { getAllUserIds, getNowPlaying, getLastPlayed, getUserDisplayName, getSessionToken } from '../services/redis.js'
 
 const group = new Hono()
 
@@ -7,10 +7,13 @@ group.get('/group-feed', async (c) => {
   const userId = c.req.query('userId')
   if (!userId) return c.json({ error: 'userId is required' }, 400)
 
+  const bearer = c.req.header('Authorization')?.replace(/^Bearer\s+/i, '')
+  if (!bearer) return c.json({ error: 'Unauthorized' }, 401)
+
+  const stored = await getSessionToken(userId)
+  if (!stored || stored !== bearer) return c.json({ error: 'Unauthorized' }, 401)
+
   const allUserIds = await getAllUserIds()
-  if (!allUserIds.includes(userId)) {
-    return c.json({ error: 'Unauthorized' }, 403)
-  }
   const otherUserIds = allUserIds.filter((id) => id !== userId)
 
   const feed = await Promise.all(
