@@ -14,7 +14,7 @@ services:
       REDIS_URL: redis://redis:6379
       NODE_ENV: production
     ports:
-      - "127.0.0.1:13742:3000"
+      - "127.0.0.1:4002:4002"
     depends_on:
       - redis
 

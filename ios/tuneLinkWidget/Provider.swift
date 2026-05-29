@@ -59,7 +59,7 @@ struct Provider: TimelineProvider {
     private func fetchEntry() async -> NowPlayingEntry {
         guard !userId.isEmpty,
               let url = URL(string: "\(baseURL)/partner-track?userId=\(userId)") else {
-            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false, partnerName: nil)
+            return NowPlayingEntry(date: .now, track: nil, artist: nil, albumArtURL: nil, isPlaying: false, partnerName: nil, lastTrack: nil, lastArtist: nil, lastAlbumArtURL: nil, lastPlayedAt: nil)
         }
 
         do {

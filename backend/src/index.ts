@@ -4,6 +4,7 @@ import auth from './routes/auth.js'
 import pair from './routes/pair.js'
 import partner from './routes/partner.js'
 import deviceToken from './routes/deviceToken.js'
+import debug from './routes/debug.js'
 import { startPoller } from './jobs/poller.js'
 
 const app = new Hono()
@@ -13,6 +14,7 @@ app.route('/auth', auth)
 app.route('/pair', pair)
 app.route('/', partner)
 app.route('/', deviceToken)
+app.route('/', debug)
 
 if (process.env.NODE_ENV !== 'test') {
   const port = Number(process.env.PORT) || 4002

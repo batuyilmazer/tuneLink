@@ -54,8 +54,8 @@ async function pollAllUsers(): Promise<void> {
             }
           }
         }
-      } catch {
-        // individual user failure should not stop the whole poll cycle
+      } catch (err) {
+        console.error(`[poller] error polling user ${userId}:`, err)
       }
     }
   } while (cursor !== '0')

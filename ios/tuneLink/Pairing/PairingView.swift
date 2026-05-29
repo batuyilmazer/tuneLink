@@ -63,11 +63,7 @@ struct PairingView: View {
             step = .connected
             return
         }
-        if let stored = defaults?.string(forKey: AppGroup.Keys.inviteCode), !stored.isEmpty {
-            inviteCode = stored
-        } else {
-            Task { await fetchInviteCode() }
-        }
+        Task { await fetchInviteCode() }
     }
 
     // MARK: - Network
