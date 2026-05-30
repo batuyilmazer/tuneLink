@@ -49,6 +49,7 @@ tuneLink/
 │   ├── Dockerfile
 │   └── docker-compose.yml       # production (api only, redis dışarıda)
 ├── ios/
+│   ├── Config.xcconfig.example  # iOS yapılandırma şablonu — kopyala ve doldur
 │   ├── tuneLink/
 │   │   ├── Auth/
 │   │   │   ├── SpotifyAuthManager.swift   # PKCE + ASWebAuthenticationSession
@@ -60,7 +61,7 @@ tuneLink/
 │       ├── Provider.swift       # TimelineProvider → /group-feed
 │       ├── WidgetView.swift     # Home screen + lock screen UI
 │       └── tuneLinkWidget.swift
-├── Caddyfile                    # api.tunelink.bira.pizza → localhost:13742
+├── Caddyfile                    # reverse proxy örneği
 └── docker-compose.yml           # dev: backend + redis birlikte
 ```
 
@@ -167,11 +168,25 @@ APNS_PRODUCTION=false   # production'da true yap
 
 ### iOS
 
+```bash
+cp ios/Config.xcconfig.example ios/Config.xcconfig
+```
+
+`ios/Config.xcconfig` dosyasını aç ve değerleri doldur:
+
+```
+SPOTIFY_CLIENT_ID = <Spotify Developer Console'dan>
+BASE_URL = https://<backend-adresin>
+```
+
+Ardından:
+
 1. Xcode'da `ios/tuneLink.xcodeproj` aç
-2. `Info.plist`'te `BASE_URL`'i backend adresinle güncelle
-3. Signing & Capabilities'te kendi Team ID'nı seç
-4. App Group'un (`group.pizza.bira.tuneLink`) hem ana target hem widget target'ta aktif olduğunu kontrol et
-5. Çalıştır
+2. Signing & Capabilities'te kendi Team ID'nı seç
+3. App Group'un (`group.<bundle-id>`) hem ana target hem widget target'ta aktif olduğunu kontrol et
+4. Çalıştır
+
+> `Config.xcconfig` gitignore'dadır — repo'ya commit edilmez.
 
 ---
 
@@ -186,8 +201,7 @@ api.tunelink.bira.pizza → localhost:13742
 Production image yalnızca backend'i içerir; Redis ayrı bir container veya managed servis olarak çalışır.
 
 ```bash
-# sunucuda
-cd /server/projects/tuneLink
+# sunucuda — projenin kök dizininde
 docker-compose -f backend/docker-compose.yml up -d --build
 ```
 

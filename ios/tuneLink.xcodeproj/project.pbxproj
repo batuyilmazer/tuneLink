@@ -62,6 +62,7 @@
 		E1EA76A858657FAAF41A891C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF83EBF79403086908D27FCF /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		FA84EE64008666AC3A346992 /* tuneLinkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tuneLinkApp.swift; sourceTree = "<group>"; };
+		CF001122334455667788AABB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -105,6 +106,7 @@
 		93D69317954B09B9EB7442DD = {
 			isa = PBXGroup;
 			children = (
+				CF001122334455667788AABB /* Config.xcconfig */,
 				7D850FA262A097712DB64FD6 /* Shared */,
 				AF2AFE7E5749FC14F2C63DB0 /* tuneLink */,
 				07CAAF026241740D3BEC3BFB /* tuneLinkWidget */,
@@ -253,6 +255,7 @@
 /* Begin XCBuildConfiguration section */
 		1E625253B0E52D915EFF2F11 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CF001122334455667788AABB /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -309,6 +312,7 @@
 		};
 		205FA0F936CF446D1FE553A2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CF001122334455667788AABB /* Config.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = tuneLinkWidget/tuneLinkWidget.entitlements;
 				DEVELOPMENT_TEAM = 7Y566H6WC6;
@@ -327,6 +331,7 @@
 		};
 		83EF3A4D830223A1119F0ABA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CF001122334455667788AABB /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = tuneLink/tuneLink.entitlements;
@@ -350,6 +355,7 @@
 		};
 		9A1CFA3F5B74F09067391399 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CF001122334455667788AABB /* Config.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = tuneLinkWidget/tuneLinkWidget.entitlements;
 				DEVELOPMENT_TEAM = 7Y566H6WC6;
@@ -368,6 +374,7 @@
 		};
 		B54F7AA58F669DA67BB3C2A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CF001122334455667788AABB /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -431,6 +438,7 @@
 		};
 		DE756EA9ACFB33539EB9E26D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CF001122334455667788AABB /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = tuneLink/tuneLink.entitlements;

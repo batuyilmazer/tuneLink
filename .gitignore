@@ -27,3 +27,4 @@ ios/*.xcworkspace/xcuserdata/
 ios/Pods/
 ios/DerivedData/
 *.xcuserstate
+ios/Config.xcconfig
