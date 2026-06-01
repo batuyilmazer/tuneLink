@@ -36,13 +36,31 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         URLSession.shared.dataTask(with: request).resume()
     }
 
-    // 13.5 — Handle silent push → reload widget timelines
+    // Handle silent push → reload widget timelines + update Live Activity
     func application(
         _ application: UIApplication,
         didReceiveRemoteNotification userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
         WidgetCenter.shared.reloadAllTimelines()
-        completionHandler(.newData)
+        Task {
+            await refreshLiveActivity()
+            completionHandler(.newData)
+        }
+    }
+
+    private func refreshLiveActivity() async {
+        guard #available(iOS 16.2, *) else { return }
+        guard let userId = UserDefaults(suiteName: AppGroup.suiteName)?.string(forKey: AppGroup.Keys.userId),
+              !userId.isEmpty,
+              let url = URL(string: "\(baseURL)/group-feed?userId=\(userId)") else { return }
+        do {
+            let sessionToken = UserDefaults(suiteName: AppGroup.suiteName)?.string(forKey: AppGroup.Keys.sessionToken) ?? ""
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let members = try JSONDecoder().decode([MemberStatus].self, from: data)
+            LiveActivityManager.shared.updateOrStart(with: members)
+        } catch {}
     }
 }

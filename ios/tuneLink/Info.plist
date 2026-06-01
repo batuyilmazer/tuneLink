@@ -45,6 +45,8 @@
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>

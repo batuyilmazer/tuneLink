@@ -1,8 +1,16 @@
 import WidgetKit
 import SwiftUI
 
-// 12.4 — Register both widget families
 @main
+struct tuneLinkWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        tuneLinkWidget()
+        if #available(iOS 16.2, *) {
+            TuneLinkLiveActivityView()
+        }
+    }
+}
+
 struct tuneLinkWidget: Widget {
     let kind = "tuneLinkWidget"
 

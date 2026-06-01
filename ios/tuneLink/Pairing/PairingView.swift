@@ -111,7 +111,7 @@ struct GroupFeedView: View {
         do {
             var components = URLComponents(string: "\(baseURL)/group-feed")!
             components.queryItems = [URLQueryItem(name: "userId", value: userId)]
-            guard let url = components.url else {
+guard let url = components.url else {
                 errorMessage = "Invalid server URL"
                 return
             }
@@ -132,6 +132,9 @@ struct GroupFeedView: View {
                 return
             }
             members = try JSONDecoder().decode([MemberStatus].self, from: data)
+            if #available(iOS 16.2, *) {
+                LiveActivityManager.shared.updateOrStart(with: members)
+            }
         } catch {
             errorMessage = error.localizedDescription
         }

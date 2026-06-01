@@ -8,8 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		02B7B521A380641D5D8987A0 /* tuneLinkWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		16D04413513AF1DDA91892BE /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89AFE0E0D623D2B8260C868 /* LiveActivityManager.swift */; };
+		36953824E4DB684FEFFFB117 /* TuneLinkLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9FBF5AA8D568F656E9A29B /* TuneLinkLiveActivityView.swift */; };
 		4CC278F57ED97344F413976D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1EA76A858657FAAF41A891C /* Assets.xcassets */; };
 		57499D79E1AA3B0D75EF8565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA2CD132697D655B65B9D67 /* LoginView.swift */; };
+		6BA86A6174140D8BB38E2ED3 /* TuneLinkActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5CCF3D4DFF3B32EF672C7 /* TuneLinkActivityAttributes.swift */; };
 		B4CDED4307C871EDFF01649A /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296DECD1F6A76062795E1B65 /* AppGroup.swift */; };
 		BCE663F8AC0C97C582E7F83D /* tuneLinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF9A8F0D9EF1277220D7BF /* tuneLinkWidget.swift */; };
 		CC337B0FAF4A0C7AE7C07BD0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704A21F7644B7D7E336D4CD5 /* AppDelegate.swift */; };
@@ -19,6 +22,7 @@
 		EE6185BFB4CE4E331E2FF56A /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3729720B00A3996DE3543CB7 /* PairingView.swift */; };
 		F8C8638972F98BAEDF7A01DC /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF83EBF79403086908D27FCF /* Provider.swift */; };
 		FA1DD4E320E5BA91D95B8E8E /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296DECD1F6A76062795E1B65 /* AppGroup.swift */; };
+		FAD53AAB9AB916C8553F13B9 /* TuneLinkActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5CCF3D4DFF3B32EF672C7 /* TuneLinkActivityAttributes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,14 +59,17 @@
 		53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = tuneLinkWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E73C00A95B4EBCF72DBEAE9 /* tuneLink.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tuneLink.entitlements; sourceTree = "<group>"; };
 		704A21F7644B7D7E336D4CD5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8E9FBF5AA8D568F656E9A29B /* TuneLinkLiveActivityView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TuneLinkLiveActivityView.swift; path = TuneLinkLiveActivityView.swift; sourceTree = "<group>"; };
 		9737349DA2733259904B6F09 /* tuneLink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tuneLink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0C54FF96629D9092288ADE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C9B2124DC2AC53552CDE4F48 /* SpotifyAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAuthManager.swift; sourceTree = "<group>"; };
 		CEEF9A8F0D9EF1277220D7BF /* tuneLinkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tuneLinkWidget.swift; sourceTree = "<group>"; };
+		CF001122334455667788AABB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		D89AFE0E0D623D2B8260C868 /* LiveActivityManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LiveActivityManager.swift; path = LiveActivity/LiveActivityManager.swift; sourceTree = "<group>"; };
+		E0F5CCF3D4DFF3B32EF672C7 /* TuneLinkActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TuneLinkActivityAttributes.swift; path = TuneLinkActivityAttributes.swift; sourceTree = "<group>"; };
 		E1EA76A858657FAAF41A891C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF83EBF79403086908D27FCF /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		FA84EE64008666AC3A346992 /* tuneLinkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tuneLinkApp.swift; sourceTree = "<group>"; };
-		CF001122334455667788AABB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -74,6 +81,7 @@
 				278CA7F89F146B4B9FF5DA9F /* tuneLinkWidget.entitlements */,
 				CEEF9A8F0D9EF1277220D7BF /* tuneLinkWidget.swift */,
 				3171A42FBF5851FE6158207A /* WidgetView.swift */,
+				8E9FBF5AA8D568F656E9A29B /* TuneLinkLiveActivityView.swift */,
 			);
 			path = tuneLinkWidget;
 			sourceTree = "<group>";
@@ -95,10 +103,19 @@
 			path = Pairing;
 			sourceTree = "<group>";
 		};
+		424C4DC6D26B6430C89A701F /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				D89AFE0E0D623D2B8260C868 /* LiveActivityManager.swift */,
+			);
+			name = LiveActivity;
+			sourceTree = "<group>";
+		};
 		7D850FA262A097712DB64FD6 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
 				296DECD1F6A76062795E1B65 /* AppGroup.swift */,
+				E0F5CCF3D4DFF3B32EF672C7 /* TuneLinkActivityAttributes.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -133,6 +150,7 @@
 				FA84EE64008666AC3A346992 /* tuneLinkApp.swift */,
 				0A4F08FD122AB2DE44FB0ACA /* Auth */,
 				3A1E6293080BB2E119BA72FD /* Pairing */,
+				424C4DC6D26B6430C89A701F /* LiveActivity */,
 			);
 			path = tuneLink;
 			sourceTree = "<group>";
@@ -154,8 +172,6 @@
 				1ECCAA8F2FD32D90EA8EA9CA /* PBXTargetDependency */,
 			);
 			name = tuneLink;
-			packageProductDependencies = (
-			);
 			productName = tuneLink;
 			productReference = 9737349DA2733259904B6F09 /* tuneLink.app */;
 			productType = "com.apple.product-type.application";
@@ -171,8 +187,6 @@
 			dependencies = (
 			);
 			name = tuneLinkWidget;
-			packageProductDependencies = (
-			);
 			productName = tuneLinkWidget;
 			productReference = 53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -228,6 +242,8 @@
 				EE6185BFB4CE4E331E2FF56A /* PairingView.swift in Sources */,
 				D4316DEA4A313EE12BE00AEA /* SpotifyAuthManager.swift in Sources */,
 				D349A4BD992A3D39A6765F91 /* tuneLinkApp.swift in Sources */,
+				6BA86A6174140D8BB38E2ED3 /* TuneLinkActivityAttributes.swift in Sources */,
+				16D04413513AF1DDA91892BE /* LiveActivityManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +255,8 @@
 				F8C8638972F98BAEDF7A01DC /* Provider.swift in Sources */,
 				E3A1F9A6004820B966BC4FC3 /* WidgetView.swift in Sources */,
 				BCE663F8AC0C97C582E7F83D /* tuneLinkWidget.swift in Sources */,
+				FAD53AAB9AB916C8553F13B9 /* TuneLinkActivityAttributes.swift in Sources */,
+				36953824E4DB684FEFFFB117 /* TuneLinkLiveActivityView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
