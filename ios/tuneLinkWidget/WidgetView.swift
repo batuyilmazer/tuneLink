@@ -86,7 +86,7 @@ private struct MemberSmallView: View {
         if member.playing, let track = member.track, let artist = member.artist {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    AlbumArtView(url: member.albumArtURL, size: 56)
+                    AlbumArtView(imageData: member.albumArtImageData, size: 56)
                     Spacer(minLength: 0)
                 }
                 Spacer(minLength: 6)
@@ -109,7 +109,7 @@ private struct MemberSmallView: View {
         } else if let track = member.lastTrack, let artist = member.lastArtist {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    AlbumArtView(url: member.lastAlbumArtURL, size: 56, dimmed: true)
+                    AlbumArtView(imageData: member.lastAlbumArtImageData, size: 56, dimmed: true)
                     Spacer(minLength: 0)
                 }
                 Spacer(minLength: 6)
@@ -154,8 +154,8 @@ private struct MemberMediumRowView: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            let artURL = member.playing ? member.albumArtURL : member.lastAlbumArtURL
-            AlbumArtView(url: artURL, size: 40, dimmed: !member.playing)
+            let artData = member.playing ? member.albumArtImageData : member.lastAlbumArtImageData
+            AlbumArtView(imageData: artData, size: 40, dimmed: !member.playing)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(member.displayName)
@@ -262,14 +262,14 @@ struct AccessoryCircularView: View {
         if let member = entry.primary {
             if member.playing {
                 ZStack {
-                    AlbumArtView(url: member.albumArtURL, size: 40)
+                    AlbumArtView(imageData: member.albumArtImageData, size: 40)
                     Image(systemName: "music.note")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(.white)
                         .shadow(radius: 2)
                 }
-            } else if member.lastAlbumArtURL != nil {
-                AlbumArtView(url: member.lastAlbumArtURL, size: 40, dimmed: true)
+            } else if member.lastAlbumArtImageData != nil {
+                AlbumArtView(imageData: member.lastAlbumArtImageData, size: 40, dimmed: true)
             } else {
                 Image(systemName: "music.note.list").font(.system(size: 16))
             }
@@ -282,19 +282,14 @@ struct AccessoryCircularView: View {
 // MARK: - Shared Helpers
 
 struct AlbumArtView: View {
-    let url: URL?
+    let imageData: Data?
     let size: CGFloat
     var dimmed: Bool = false
 
     var body: some View {
         Group {
-            if let url {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .success(let image): image.resizable().scaledToFill()
-                    default: placeholder
-                    }
-                }
+            if let imageData, let uiImage = UIImage(data: imageData) {
+                Image(uiImage: uiImage).resizable().scaledToFill()
             } else {
                 placeholder
             }

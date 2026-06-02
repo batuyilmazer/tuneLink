@@ -14,9 +14,15 @@ struct MemberStatusWidget: Decodable {
     let lastAlbumArt: String?
     let lastPlayedAt: Double?
 
-    var albumArtURL: URL? { albumArt.flatMap { URL(string: $0) } }
-    var lastAlbumArtURL: URL? { lastAlbumArt.flatMap { URL(string: $0) } }
+    var albumArtImageData: Data?
+    var lastAlbumArtImageData: Data?
+
     var lastPlayedDate: Date? { lastPlayedAt.map { Date(timeIntervalSince1970: $0 / 1000) } }
+
+    enum CodingKeys: String, CodingKey {
+        case userId, displayName, playing, track, artist, albumArt, timestamp
+        case lastTrack, lastArtist, lastAlbumArt, lastPlayedAt
+    }
 }
 
 struct GroupEntry: TimelineEntry {
@@ -75,10 +81,30 @@ struct Provider: TimelineProvider {
             var request = URLRequest(url: url)
             request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
             let (data, _) = try await URLSession.shared.data(for: request)
-            let members = try JSONDecoder().decode([MemberStatusWidget].self, from: data)
+            var members = try JSONDecoder().decode([MemberStatusWidget].self, from: data)
+            members = await withTaskGroup(of: (Int, Data?, Data?).self) { group in
+                for (i, m) in members.enumerated() {
+                    group.addTask {
+                        async let art = downloadImage(urlString: m.albumArt)
+                        async let lastArt = downloadImage(urlString: m.lastAlbumArt)
+                        return (i, await art, await lastArt)
+                    }
+                }
+                var result = members
+                for await (i, art, lastArt) in group {
+                    result[i].albumArtImageData = art
+                    result[i].lastAlbumArtImageData = lastArt
+                }
+                return result
+            }
             return GroupEntry(date: .now, members: members)
         } catch {
             return GroupEntry(date: .now, members: [])
         }
+    }
+
+    private func downloadImage(urlString: String?) async -> Data? {
+        guard let urlString, let url = URL(string: urlString) else { return nil }
+        return try? await URLSession.shared.data(from: url).0
     }
 }

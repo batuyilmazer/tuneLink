@@ -36,6 +36,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         URLSession.shared.dataTask(with: request).resume()
     }
 
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        Task { await refreshLiveActivity() }
+    }
+
     // Handle silent push → reload widget timelines + update Live Activity
     func application(
         _ application: UIApplication,

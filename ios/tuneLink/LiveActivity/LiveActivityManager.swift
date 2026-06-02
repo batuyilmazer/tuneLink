@@ -17,24 +17,29 @@ final class LiveActivityManager {
             return
         }
 
-        let state = TuneLinkActivityAttributes.ContentState(
-            friendName: primary.displayName,
-            track: primary.playing ? (primary.track ?? "") : (primary.lastTrack ?? ""),
-            artist: primary.playing ? (primary.artist ?? "") : (primary.lastArtist ?? ""),
-            albumArtURL: primary.playing ? primary.albumArtURL : primary.lastAlbumArtURL,
-            isPlaying: primary.playing
-        )
+        let artURL = primary.playing ? primary.albumArtURL : primary.lastAlbumArtURL
 
-        if let existing = Activity<TuneLinkActivityAttributes>.activities.first,
-           existing.activityState == .active {
-            Task {
-                await existing.update(
-                    ActivityContent(state: state, staleDate: nil)
-                )
+        Task {
+            if let artURL { await AlbumArtCache.prefetch(artURL) }
+
+            let activeURLs = members.compactMap { $0.playing ? $0.albumArtURL : $0.lastAlbumArtURL }
+            AlbumArtCache.evictStale(keeping: activeURLs)
+
+            let state = TuneLinkActivityAttributes.ContentState(
+                friendName: primary.displayName,
+                track: primary.playing ? (primary.track ?? "") : (primary.lastTrack ?? ""),
+                artist: primary.playing ? (primary.artist ?? "") : (primary.lastArtist ?? ""),
+                albumArtURL: artURL,
+                isPlaying: primary.playing
+            )
+
+            if let existing = Activity<TuneLinkActivityAttributes>.activities.first,
+               existing.activityState == .active {
+                await existing.update(ActivityContent(state: state, staleDate: nil))
+            } else {
+                await endAll()
+                start(with: state)
             }
-        } else {
-            Task { await endAll() }
-            start(with: state)
         }
     }
 

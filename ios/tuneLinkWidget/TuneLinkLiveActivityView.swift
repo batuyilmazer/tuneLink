@@ -93,13 +93,8 @@ private struct LiveActivityAlbumArt: View {
 
     var body: some View {
         Group {
-            if let url {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .success(let image): image.resizable().scaledToFill()
-                    default: placeholder
-                    }
-                }
+            if let uiImage = AlbumArtCache.image(for: url) {
+                Image(uiImage: uiImage).resizable().scaledToFill()
             } else {
                 placeholder
             }

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		02B7B521A380641D5D8987A0 /* tuneLinkWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53996C72FD163CB8F7E1BB0B /* tuneLinkWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D04413513AF1DDA91892BE /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89AFE0E0D623D2B8260C868 /* LiveActivityManager.swift */; };
+		AA11BB22CC33DD44EE55FF66 /* AlbumArtCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF00 /* AlbumArtCache.swift */; };
+		BB22CC33DD44EE55FF6600AA /* AlbumArtCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF00 /* AlbumArtCache.swift */; };
 		36953824E4DB684FEFFFB117 /* TuneLinkLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9FBF5AA8D568F656E9A29B /* TuneLinkLiveActivityView.swift */; };
 		4CC278F57ED97344F413976D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1EA76A858657FAAF41A891C /* Assets.xcassets */; };
 		57499D79E1AA3B0D75EF8565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA2CD132697D655B65B9D67 /* LoginView.swift */; };
@@ -53,6 +55,7 @@
 		0B688D20FB5349DEF00AA884 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		278CA7F89F146B4B9FF5DA9F /* tuneLinkWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tuneLinkWidget.entitlements; sourceTree = "<group>"; };
 		296DECD1F6A76062795E1B65 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF00 /* AlbumArtCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumArtCache.swift; sourceTree = "<group>"; };
 		3171A42FBF5851FE6158207A /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
 		3729720B00A3996DE3543CB7 /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
 		4CA2CD132697D655B65B9D67 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -114,6 +117,7 @@
 		7D850FA262A097712DB64FD6 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				AA11BB22CC33DD44EE55FF00 /* AlbumArtCache.swift */,
 				296DECD1F6A76062795E1B65 /* AppGroup.swift */,
 				E0F5CCF3D4DFF3B32EF672C7 /* TuneLinkActivityAttributes.swift */,
 			);
@@ -244,6 +248,7 @@
 				D349A4BD992A3D39A6765F91 /* tuneLinkApp.swift in Sources */,
 				6BA86A6174140D8BB38E2ED3 /* TuneLinkActivityAttributes.swift in Sources */,
 				16D04413513AF1DDA91892BE /* LiveActivityManager.swift in Sources */,
+				AA11BB22CC33DD44EE55FF66 /* AlbumArtCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +262,7 @@
 				BCE663F8AC0C97C582E7F83D /* tuneLinkWidget.swift in Sources */,
 				FAD53AAB9AB916C8553F13B9 /* TuneLinkActivityAttributes.swift in Sources */,
 				36953824E4DB684FEFFFB117 /* TuneLinkLiveActivityView.swift in Sources */,
+				BB22CC33DD44EE55FF6600AA /* AlbumArtCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
