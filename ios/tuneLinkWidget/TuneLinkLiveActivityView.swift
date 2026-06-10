@@ -42,13 +42,13 @@ struct TuneLinkLiveActivityView: Widget {
                     .padding(.bottom, 4)
                 }
             } compactLeading: {
-                LiveActivityAlbumArt(url: context.state.albumArtURL, size: 28)
+                InitialsCircle(name: context.state.friendName, size: 28)
             } compactTrailing: {
-                Image(systemName: "music.note")
+                Image(systemName: "heart.fill")
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(context.state.isPlaying ? .green : .secondary)
+                    .foregroundStyle(context.state.isPlaying ? .pink : .secondary)
             } minimal: {
-                LiveActivityAlbumArt(url: context.state.albumArtURL, size: 24)
+                InitialsCircle(name: context.state.friendName, size: 24)
             }
         }
     }
@@ -84,6 +84,30 @@ private struct LiveActivityLockScreenView: View {
         }
         .padding(14)
         .activityBackgroundTint(Color(.systemBackground))
+    }
+}
+
+private struct InitialsCircle: View {
+    let name: String
+    let size: CGFloat
+
+    private var initials: String {
+        name.split(separator: " ")
+            .prefix(2)
+            .compactMap { $0.first.map(String.init) }
+            .joined()
+            .uppercased()
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(Color.accentColor.opacity(0.25))
+            Text(initials)
+                .font(.system(size: size * 0.38, weight: .semibold))
+                .foregroundStyle(.primary)
+        }
+        .frame(width: size, height: size)
     }
 }
 
